@@ -7,10 +7,9 @@
 	import EditPlaylist from '$lib/components/playlist/EditPlaylist.svelte';
 	import { goto } from '$app/navigation';
 	AuthService.protected_route();
-	const uuid = $page.params.uuid;
 	let playlist = null;
 	onMount(async () => {
-		playlist = await PlaylistsService.getPlaylist(uuid);
+		playlist = PlaylistsService.generateNewPlaylist();
 	});
 </script>
 

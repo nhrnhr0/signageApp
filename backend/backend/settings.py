@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
-
+    'debug_toolbar',
     
 
     # Own apps
@@ -57,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -158,3 +160,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATIC_URL = 'static/'
 MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media_root/')
 MEDIA_URL = '/media/'
+
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]

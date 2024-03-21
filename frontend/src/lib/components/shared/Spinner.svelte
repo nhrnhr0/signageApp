@@ -1,1 +1,1 @@
-<div class="spinner-border text-primary" role="status"></div>
+<!-- <div class="spinner-border text-primary" role="status"></div> -->

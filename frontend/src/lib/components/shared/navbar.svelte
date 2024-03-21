@@ -29,6 +29,10 @@
 			<li class="nav-item">
 				<a class="nav-link" href="/playlists"> פלייליסטים </a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" href="/screens"> מסכים </a>
+			</li>
+
 			{#if $isLoggedIn}
 				<li class="nav-item">
 					<a

@@ -1,6 +1,6 @@
 <script>
-	import { createEventDispatcher } from 'svelte';
-	import PlaylistsService from '$lib/network.js';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import PlaylistsService from '$lib/services/playlists';
 	const dispatch = createEventDispatcher();
 
 	export let playlist;
@@ -11,9 +11,23 @@
 	let _file = null;
 
 	function submit() {
+		if (!_file) {
+			return;
+		}
+		if (playlist.uuid) {
+			upload();
+		} else {
+			PlaylistsService.createPlaylist(playlist).then((data) => {
+				playlist = data;
+				upload();
+			});
+		}
+	}
+	function upload() {
 		PlaylistsService.uploadAsset(playlist.uuid, _file, duration, type).then((res) => {
 			// add the asset to the playlist
-			dispatch('added', res);
+			playlist.assets.push(res);
+			dispatch('added', playlist);
 		});
 	}
 
@@ -44,16 +58,14 @@
             alt="file" />`;
 		}
 	}
+	onMount(() => {
+		let el = document.querySelector('input[type="file"]#file');
+		el.focus();
+		el.click();
+	});
 </script>
 
-<form
-	action=""
-	method="post"
-	enctype="multipart/form-data"
-	on:submit|preventDefault={() => {
-		submit();
-	}}
->
+<form action="" method="post" enctype="multipart/form-data" on:submit|preventDefault={submit}>
 	<!-- file -->
 	<div class="form-group">
 		<label for="file">קובץ</label>
@@ -101,5 +113,5 @@
 		</select>
 	</div>
 
-	<button type="submit">העלה</button>
+	<button type="submit" class="btn btn-primary">העלה</button>
 </form>

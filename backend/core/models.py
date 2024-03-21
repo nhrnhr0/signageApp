@@ -23,8 +23,8 @@ SCREEN_LAYOUT_CHOICES = (
 )
 
 MainWith4Subs = [
-    'Main','Sub1','Sub2','Sub3','Sub4']
-FullScreen = ['Main']
+    'ראשי','תת תצוגה 1','תת תצוגה 2','תת תצוגה 3','תת תצוגה 4']
+FullScreen = ['ראשי']
 
 class Screen(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)

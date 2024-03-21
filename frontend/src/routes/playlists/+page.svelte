@@ -1,6 +1,6 @@
 <script>
 	import AuthService from '$lib/auth';
-	import PlaylistsService from '$lib/network.js';
+	import PlaylistsService from '$lib/services/playlists';
 	import { onMount } from 'svelte';
 	AuthService.protected_route();
 	let playlists = [];
@@ -15,7 +15,10 @@
 	});
 </script>
 
-<h2>פלייליסטים</h2>
+<h1 class="mb-4 mt-4">פלייליסטים</h1>
+<!-- create new playlist button -->
+<a href="/playlists/new" class="btn btn-primary">צור פלייליסט חדש</a>
+<h2 class="mb-4 mt-4">רשימת פלייליסטים</h2>
 <ul>
 	{#each playlists as playlist}
 		<li>

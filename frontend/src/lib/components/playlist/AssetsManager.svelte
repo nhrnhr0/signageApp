@@ -1,8 +1,9 @@
 <script>
 	import ModalPlayListFileUpload from '../modals/ModalPlayListFileUpload.svelte';
 	import { BACKEND_MEDIA_URL, BACKEND_URL } from '$lib/consts';
-	import PlaylistService from '$lib/network.js';
+	import PlaylistService from '$lib/services/playlists';
 	import { openModal } from 'svelte-modals';
+	import IconUpload from '../icons/IconUpload.svelte';
 	export let playlist;
 
 	function upload_asset_btn() {
@@ -11,18 +12,32 @@
 
 		openModal(ModalPlayListFileUpload, {
 			playlist: playlist,
-			onAdded: (asset) => {
-				playlist.assets.push(asset);
-				playlist.assets = [...playlist.assets];
-				console.log('onAdded', asset);
+			onUpdated: (_playlist) => {
+				// playlist.assets.push(asset);
+				// playlist.assets = [...playlist.assets];
+				// console.log('onAdded', asset);
+				playlist = _playlist;
 			}
 		});
 	}
 </script>
 
 <h2>תכנים</h2>
-
 <div class="card-container">
+	<!-- first item is a button designed like an item -->
+	<div
+		class="item"
+		style="border: 2px dashed #000;cursor: pointer;"
+		on:click|preventDefault={upload_asset_btn}
+	>
+		<div class="media-container">
+			<img src="/icons8-upload-50_16x9.png" class="media-image" alt="upload" />
+		</div>
+		<div class="info" style="text-align: center;font-size: 1.5em;">
+			<p>הוסף קובץ</p>
+		</div>
+	</div>
+
 	{#each playlist.assets as asset}
 		<div class="item">
 			<div class="media-container">
@@ -44,7 +59,8 @@
 		<!-- display the name and duration -->
 	{/each}
 </div>
-<button class="btn btn-primary" on:click|preventDefault={upload_asset_btn}> הוסף קובץ </button>
+
+<!-- <button class="btn btn-primary" on:click|preventDefault={upload_asset_btn}> הוסף קובץ </button> -->
 
 <style>
 	.card-container {

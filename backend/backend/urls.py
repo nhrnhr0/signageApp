@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from core.views import playlists_view,playlist_detail_view,playlist_upload_asset
-from core.views import screens_view
+from core.views import screens_view,screen_detail_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -32,9 +32,14 @@ urlpatterns = [
     path('playlists/<uuid:pk>/upload-asset/', playlist_upload_asset, name='playlist-assets'),
     
     path('screens/', screens_view, name='screens'),
+    path('screens/<uuid:pk>/', screen_detail_view, name='screen-detail'),
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + \
         static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns = urlpatterns + \
         static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+        
+    urlpatterns += [
+        path('__debug__/', include("debug_toolbar.urls")),
+    ]

@@ -1,19 +1,28 @@
 <script>
 	import { closeModal } from 'svelte-modals';
-	import UploadFile from '../playlist/UploadFile.svelte';
+	import EditPlaylist from '../playlist/EditPlaylist.svelte';
 	import { onMount } from 'svelte';
+	import PlaylistSerice from '$lib/services/playlists';
 
 	// provided by <Modals />
 	export let isOpen;
 
-	export let playlist;
+	export let playlist_uuid;
 	export let onUpdated;
+	let playlist;
 	function asset_added(event) {
 		console.log('asset_added', event.detail);
 		let playlist = event.detail;
 		onUpdated(playlist);
 		closeModal();
 	}
+	onMount(() => {
+		console.log('EditPlaylistModal onMount');
+		PlaylistSerice.getPlaylist(playlist_uuid).then((data) => {
+			console.log('EditPlaylistModal onMount getPlaylist', data);
+			playlist = data;
+		});
+	});
 </script>
 
 {#if isOpen}
@@ -21,8 +30,9 @@
 		<div class="contents">
 			<!-- exit button -->
 			<button class="btn exit-btn" on:click={closeModal}>X</button>
-
-			<UploadFile {playlist} on:added={asset_added} />
+			{#if playlist}
+				<EditPlaylist {playlist} />
+			{/if}
 		</div>
 	</div>
 {/if}
