@@ -22,7 +22,8 @@ async function my_fetch(url, options = undefined) {
         }
         options.headers["Authorization"] = `Token ${token}`;
     }
-    return fetch(url, options);
+    let ret = await fetch(url, options);
+    return ret;
 }
 
 class PlaylistsService {
@@ -31,6 +32,7 @@ class PlaylistsService {
     }
 
     async getPlaylists() {
+        debugger;
         const response = await my_fetch(this.baseUrl);
         return response.json();
     }

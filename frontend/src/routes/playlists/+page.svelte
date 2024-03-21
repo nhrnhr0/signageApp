@@ -5,7 +5,13 @@
 	AuthService.protected_route();
 	let playlists = [];
 	onMount(async () => {
-		playlists = await PlaylistsService.getPlaylists();
+		try {
+			let resp = await PlaylistsService.getPlaylists();
+			playlists = resp;
+		} catch (e) {
+			console.log(e);
+			playlists = [];
+		}
 	});
 </script>
 

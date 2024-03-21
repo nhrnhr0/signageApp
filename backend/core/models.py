@@ -22,6 +22,10 @@ SCREEN_LAYOUT_CHOICES = (
     ('MainWith4Subs', _('Main With 4 Subs')),
 )
 
+MainWith4Subs = [
+    'Main','Sub1','Sub2','Sub3','Sub4']
+FullScreen = ['Main']
+
 class Screen(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Screen Name'))
@@ -29,7 +33,7 @@ class Screen(models.Model):
     is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
     
     layout = models.CharField(max_length=100, choices=SCREEN_LAYOUT_CHOICES, default='MainWith4Subs', verbose_name=_('Layout'))
-    islands = models.ManyToManyField('Island', related_name='screens', verbose_name=_('Islands'), blank=True)
+    # islands = models.ManyToManyField('Island', related_name='screens', verbose_name=_('Islands'), blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created At'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated At'))
@@ -39,13 +43,35 @@ class Screen(models.Model):
     class Meta:
         verbose_name = _('Screen')
         verbose_name_plural = _('Screens')
+        
+    def save(self, *args, **kwargs):
+        # init islands based on layout
+        self.init_islands()
+        super(Screen, self).save(*args, **kwargs)
 
 
+    def init_islands(self):
+        # init islands based on layout
+        from .models import Island
+        islands = Island.objects.filter(screen=self)
+        needed_islands = []
+        if self.layout == 'MainWith4Subs':
+            needed_islands = MainWith4Subs
+        elif self.layout == 'FullScreen':
+            needed_islands = FullScreen
+        for island in islands:
+            if island.name not in needed_islands:
+                island.delete()
+            else:
+                needed_islands.remove(island.name)
+        for island in needed_islands:
+            Island.objects.create(name=island, screen=self)
+            
 
 class Island(models.Model):
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
     playlists = models.ManyToManyField('Playlist', related_name='island', verbose_name=_('Playlists'), blank=True)
-    
+    screen = models.ForeignKey('Screen', related_name='islands', on_delete=models.CASCADE, verbose_name=_('Screen'))
     class Meta:
         verbose_name = _('Island')
         verbose_name_plural = _('Islands')
@@ -57,7 +83,7 @@ class Island(models.Model):
 class Playlist(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
-    assets = models.ManyToManyField('Asset', related_name='playlist', verbose_name=_('Assets'))
+    assets = models.ManyToManyField('Asset', related_name='playlist', verbose_name=_('Assets'), blank=True)
     is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
     start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Start At'), default=None)
     end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('End At'), default=None)
