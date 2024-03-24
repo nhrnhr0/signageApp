@@ -24,13 +24,13 @@
         "
 		>
 			<li class="nav-item active">
-				<a class="nav-link" href="/">בית <span class="sr-only">(current)</span></a>
+				<a class="nav-link" href="/dashboard">בית <span class="sr-only">(current)</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="/playlists"> פלייליסטים </a>
+				<a class="nav-link" href="/dashboard/playlists"> פלייליסטים </a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="/screens"> מסכים </a>
+				<a class="nav-link" href="/dashboard/screens"> מסכים </a>
 			</li>
 
 			{#if $isLoggedIn}

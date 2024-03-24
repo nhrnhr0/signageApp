@@ -12,7 +12,7 @@ class ScreenAdmin(admin.ModelAdmin):
     inlines = [IslandInline]
 admin.site.register(Screen, ScreenAdmin)
 class IslandAdmin(admin.ModelAdmin):    
-
+    list_display = ['id', 'name', 'screen']
     pass
 admin.site.register(Island, IslandAdmin)
 class PlaylistAdmin(admin.ModelAdmin):

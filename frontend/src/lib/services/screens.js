@@ -69,6 +69,16 @@ class ScreensService {
         });
         return response.json();
     }
+
+    async getAllScreensAndIslands() {
+        const response = await my_fetch(BACKEND_URL + "/screens-islands/");
+        return response.json();
+    }
+
+    async getScrenDisplayByCode(code) {
+        const response = await my_fetch(`${this.baseUrl}display/${code}/`);
+        return response.json();
+    }
 }
 
 export default new ScreensService();

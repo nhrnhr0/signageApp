@@ -1,5 +1,22 @@
 from .models import Screen,Playlist,Asset,Island
 from rest_framework import serializers
+
+
+class ScreensIslandsSerializer(serializers.ModelSerializer):
+    islands = serializers.SerializerMethodField()
+    def get_islands(self, obj):
+        ret = []
+        for island in obj.islands.all():
+            ret.append({
+                'id': island.id,
+                'name': island.name
+            })
+        return ret
+    class Meta:
+        model = Screen
+        fields = ('uuid', 'name', 'is_active',  'islands')
+    
+
 class ScreenSerializer(serializers.ModelSerializer):
     class Meta:
         model = Screen
@@ -25,7 +42,7 @@ class ScreenDetailSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Screen
-        fields = ('uuid', 'name', 'is_active', 'layout', 'islands')
+        fields = ('uuid','code', 'name', 'is_active', 'layout', 'islands')
 class ScreenInPlaylistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Screen
@@ -48,7 +65,41 @@ class PlaylistsViewSerializer(serializers.ModelSerializer):
         
 class PlaylistDetailSerializer(serializers.ModelSerializer):
     assets = AssetSerializer(many=True, read_only=True)
-    island = IslandSerializer(many=True, read_only=True)
+    islands = IslandSerializer(many=True, read_only=True)
     class Meta:
         model = Playlist
-        fields = ('uuid', 'name', 'is_active', 'start_at', 'end_at', 'assets','island')
+        fields = ('uuid', 'name', 'is_active', 'start_at', 'end_at', 'assets','islands')
+        
+        
+class ScreenDisplaySerializer(serializers.ModelSerializer):
+    islands = serializers.SerializerMethodField()
+    
+    def get_islands(self, obj):
+        ret = []
+        for island in obj.islands.all():
+            playlists = []
+            for playlist in island.playlists.all():
+                assets = []
+                for asset in playlist.assets.all():
+                    assets.append({
+                        'id': asset.id,
+                        'name': asset.name,
+                        'media': asset.media.url,
+                        'type': asset.type,
+                        'duration': asset.duration
+                    })
+                playlists.append({
+                    'uuid': playlist.uuid,
+                    'name': playlist.name,
+                    'assets': assets
+                })
+            ret.append({
+                'id': island.id,
+                'name': island.name,
+                'playlists': playlists
+            })
+        return ret
+    
+    class Meta:
+        model = Screen
+        fields = ('uuid', 'name', 'is_active', 'layout', 'islands')

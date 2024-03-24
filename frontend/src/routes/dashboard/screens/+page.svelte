@@ -2,6 +2,7 @@
 	import AuthService from '$lib/auth';
 	import ScreensService from '$lib/services/screens';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	AuthService.protected_route();
 	let screens = [];
 	onMount(async () => {
@@ -20,7 +21,7 @@
 	{#each screens as screen}
 		<li>
 			<div>
-				<a href="/screens/{screen.uuid}">{screen.name}</a>
+				<a href="{$page.url}/{screen.uuid}">{screen.name}</a>
 			</div>
 		</li>
 	{/each}

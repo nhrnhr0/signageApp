@@ -19,7 +19,7 @@
 	<EditPlaylist
 		bind:playlist
 		on:save={(pl) => {
-			goto(`/playlists/`);
+			goto(`/dashboard/playlists/`);
 		}}
 	/>
 {/if}

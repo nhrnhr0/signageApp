@@ -2,6 +2,7 @@
 	import AssetsManager from './AssetsManager.svelte';
 	import PlaylistService from '$lib/services/playlists';
 	import { createEventDispatcher } from 'svelte';
+	import PlaylistIslandsSelect from './PlaylistIslandsSelect.svelte';
 	export const dispatch = createEventDispatcher();
 	export let playlist;
 	let submiting = false;
@@ -26,7 +27,7 @@
 		{#if playlist.uuid}
 			עריכת פלייליסט: {playlist.name}
 		{:else}
-			יצירת פלייליסט
+			יצירת פלייליסט חדש
 		{/if}
 	</h2>
 	<form action="" method="post" enctype="multipart/form-data">
@@ -47,7 +48,10 @@
 			<input type="text" class="form-control" id="name" name="name" bind:value={playlist.name} />
 		</div>
 		<!-- islands selection -->
-
+		<div class="form-group">
+			<label for="">פעיל במסכים</label>
+			<PlaylistIslandsSelect {playlist} />
+		</div>
 		<button
 			type="submit"
 			class="btn btn-primary"

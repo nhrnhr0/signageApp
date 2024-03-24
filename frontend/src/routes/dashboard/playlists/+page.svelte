@@ -2,6 +2,7 @@
 	import AuthService from '$lib/auth';
 	import PlaylistsService from '$lib/services/playlists';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	AuthService.protected_route();
 	let playlists = [];
 	onMount(async () => {
@@ -17,13 +18,13 @@
 
 <h1 class="mb-4 mt-4">פלייליסטים</h1>
 <!-- create new playlist button -->
-<a href="/playlists/new" class="btn btn-primary">צור פלייליסט חדש</a>
+<a href="/dashboard/playlists/new" class="btn btn-primary">צור פלייליסט חדש</a>
 <h2 class="mb-4 mt-4">רשימת פלייליסטים</h2>
 <ul>
 	{#each playlists as playlist}
 		<li>
 			<div>
-				<a href="/playlists/{playlist.uuid}">{playlist.name}</a>
+				<a href="{$page.url}/{playlist.uuid}">{playlist.name}</a>
 			</div>
 		</li>
 	{/each}

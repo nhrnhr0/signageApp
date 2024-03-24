@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from core.views import playlists_view,playlist_detail_view,playlist_upload_asset
-from core.views import screens_view,screen_detail_view
+from core.views import screens_view,screen_detail_view,screens_islands_view,screen_display_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -33,6 +33,8 @@ urlpatterns = [
     
     path('screens/', screens_view, name='screens'),
     path('screens/<uuid:pk>/', screen_detail_view, name='screen-detail'),
+    path('screens-islands/', screens_islands_view, name='screens-islands'),
+    path('screens/display/<str:code>/', screen_display_view, name='screens-display'),
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + \

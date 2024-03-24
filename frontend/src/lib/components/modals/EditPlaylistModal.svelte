@@ -18,10 +18,14 @@
 	}
 	onMount(() => {
 		console.log('EditPlaylistModal onMount');
-		PlaylistSerice.getPlaylist(playlist_uuid).then((data) => {
-			console.log('EditPlaylistModal onMount getPlaylist', data);
-			playlist = data;
-		});
+		if (playlist_uuid) {
+			PlaylistSerice.getPlaylist(playlist_uuid).then((data) => {
+				console.log('EditPlaylistModal onMount getPlaylist', data);
+				playlist = data;
+			});
+		} else {
+			playlist = PlaylistSerice.generateNewPlaylist();
+		}
 	});
 </script>
 
@@ -31,7 +35,7 @@
 			<!-- exit button -->
 			<button class="btn exit-btn" on:click={closeModal}>X</button>
 			{#if playlist}
-				<EditPlaylist {playlist} />
+				<EditPlaylist {playlist} on:save={asset_added} />
 			{/if}
 		</div>
 	</div>

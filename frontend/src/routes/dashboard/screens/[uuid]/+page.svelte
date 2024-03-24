@@ -62,9 +62,12 @@
 {:else}
 	<div class="container mt-5">
 		<h2>מסך: {screen?.name}</h2>
+		<h6>
+			<a href="/display/{screen.code}" target="_blank">הצג במסך</a>
+		</h6>
 		<form action="" method="post" enctype="multipart/form-data">
 			<!-- is_active -->
-			<div class="form-group form-check" style="z-index: -1;">
+			<div class="form-group form-check">
 				<input
 					type="checkbox"
 					class="form-check-input"

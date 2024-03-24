@@ -6,11 +6,15 @@
 	import PlaylistSerice from '$lib/services/playlists';
 	import AddOrCreatePlaylist from '../AddOrCreatePlaylist.svelte';
 	export let screen;
-
+	function playlist_updated(playlist) {
+		console.log('playlist_updated', playlist);
+		screen = { ...screen };
+	}
 	function handle_edit_playlist_btn(playlist) {
 		console.log('handle_edit_playlist_btn');
 		openModal(EditPlaylistModal, {
-			playlist_uuid: playlist.uuid
+			playlist_uuid: playlist.uuid,
+			onUpdated: playlist_updated
 		});
 	}
 </script>
@@ -52,9 +56,8 @@
 				<div class="my-card">
 					<div class="card-body">
 						<p class="card-text">
-							{island.name}
+							{island.name}:
 							<AddOrCreatePlaylist bind:island />
-							:
 						</p>
 						<ul>
 							{#each island.playlists as playlist}
@@ -87,14 +90,14 @@
 	/* 4 subs each in 1/5 of the height and 1/4 of the width */
 	.wraper {
 		position: relative;
-		padding-bottom: 80%;
+		/* padding-bottom: 80%; */
 	}
 	.wraper .row {
-		position: absolute;
+		/* position: absolute;
 		top: 0;
 		left: 0;
 		width: 100%;
-		height: 100%;
+		height: 100%; */
 	}
 	.wraper .item {
 		height: 100%;
@@ -102,10 +105,8 @@
 		padding-right: 0px;
 	}
 	.wraper .item-big {
-		height: 80%;
 	}
 	.wraper .item-small {
-		height: 20%;
 	}
 	.wraper .my-card {
 		height: 100%;

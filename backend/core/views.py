@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .serializers import PlaylistsViewSerializer, PlaylistDetailSerializer,ScreenSerializer,ScreenDetailSerializer
+from .serializers import PlaylistsViewSerializer, PlaylistDetailSerializer,ScreenSerializer,ScreenDetailSerializer,ScreensIslandsSerializer,ScreenDisplaySerializer
 from .models import Playlist, Asset, Screen
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -32,8 +32,14 @@ def playlists_view(request):
 def playlist_detail_view(request, pk):
     if request.method == 'PUT':
         playlist = Playlist.objects.get(uuid=pk)
-        playlist.is_active = True if request.data.get('is_active','') == 'on' else False
+        playlist.is_active = request.data.get('is_active',False)
         playlist.name = request.data['name']
+        #request.data.get('islands') = [{'id': 15, 'name': 'ראשי'}, {'id': 16, 'name': 'תת תצוגה 1'}]
+        islands_ids = [i['id'] for i in request.data.get('islands',[])]
+        playlist.islands.clear()
+        playlist.islands.add(*islands_ids)
+        
+        
         playlist.save()
     playlist = Playlist.objects.prefetch_related('assets').get(uuid=pk)
     serializer = PlaylistDetailSerializer(playlist)
@@ -76,4 +82,23 @@ def screens_view(request):
 def screen_detail_view(request, pk):
     screen = Screen.objects.prefetch_related('islands','islands__playlists').get(uuid=pk)
     serializer = ScreenDetailSerializer(screen)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def screens_islands_view(request):
+    screens = Screen.objects.prefetch_related('islands','islands__playlists').all()
+    serializer = ScreensIslandsSerializer(screens, many=True)
+    return Response(serializer.data)
+
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def screen_display_view(request, code):
+    screen = Screen.objects.get(code=code)
+    serializer = ScreenDisplaySerializer(screen)
     return Response(serializer.data)

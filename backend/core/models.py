@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 import uuid
-
+from django.utils.text import slugify
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -25,6 +25,10 @@ SCREEN_LAYOUT_CHOICES = (
 MainWith4Subs = [
     'ראשי','תת תצוגה 1','תת תצוגה 2','תת תצוגה 3','תת תצוגה 4']
 FullScreen = ['ראשי']
+
+def short_urlsafe_uuid():
+    return slugify(str(uuid.uuid4())[:8])
+
 
 class Screen(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)
@@ -70,7 +74,7 @@ class Screen(models.Model):
 
 class Island(models.Model):
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
-    playlists = models.ManyToManyField('Playlist', related_name='island', verbose_name=_('Playlists'), blank=True)
+    playlists = models.ManyToManyField('Playlist', related_name='islands', verbose_name=_('Playlists'), blank=True)
     screen = models.ForeignKey('Screen', related_name='islands', on_delete=models.CASCADE, verbose_name=_('Screen'))
     class Meta:
         verbose_name = _('Island')
