@@ -31,7 +31,7 @@ def short_urlsafe_uuid():
 
 
 class Screen(models.Model):
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)
+    uuid = models.CharField(default=short_urlsafe_uuid, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True, max_length=50)
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Screen Name'))
     code = models.CharField(max_length=100, unique=True, verbose_name=_('Code'))
     is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
@@ -50,8 +50,9 @@ class Screen(models.Model):
         
     def save(self, *args, **kwargs):
         # init islands based on layout
-        self.init_islands()
+        
         super(Screen, self).save(*args, **kwargs)
+        self.init_islands()
 
 
     def init_islands(self):
@@ -63,6 +64,8 @@ class Screen(models.Model):
             needed_islands = MainWith4Subs
         elif self.layout == 'FullScreen':
             needed_islands = FullScreen
+            
+            
         for island in islands:
             if island.name not in needed_islands:
                 island.delete()

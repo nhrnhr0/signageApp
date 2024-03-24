@@ -23,32 +23,34 @@
 			class="navbar-nav
         "
 		>
-			<li class="nav-item active">
+			<li class="nav-item" class:active={$page.url === '/dashboard'}>
 				<a class="nav-link" href="/dashboard">בית <span class="sr-only">(current)</span></a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" class:active={$page.url.toString().includes('/dashboard/playlists')}>
 				<a class="nav-link" href="/dashboard/playlists"> פלייליסטים </a>
 			</li>
-			<li class="nav-item">
+			<li class="nav-item" class:active={$page.url.toString().includes('/dashboard/screens')}>
 				<a class="nav-link" href="/dashboard/screens"> מסכים </a>
 			</li>
-
-			{#if $isLoggedIn}
-				<li class="nav-item">
-					<a
-						class="nav-link"
-						href="#"
-						on:click|preventDefault={() => {
-							AuthService.logout();
-							window.location.reload();
-						}}>Logout</a
-					>
-				</li>
-			{:else}
-				<li class="nav-item">
-					<a class="nav-link" href="/login">Login</a>
-				</li>
-			{/if}
 		</ul>
 	</div>
+
+	<ul class="navbar-nav ml-auto">
+		{#if $isLoggedIn}
+			<li class="nav-item">
+				<a
+					class="nav-link"
+					href="#"
+					on:click|preventDefault={() => {
+						AuthService.logout();
+						window.location.reload();
+					}}>Logout</a
+				>
+			</li>
+		{:else}
+			<li class="nav-item">
+				<a class="nav-link" href="/dashboead/login">Login</a>
+			</li>
+		{/if}
+	</ul>
 </nav>

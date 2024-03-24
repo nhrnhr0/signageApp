@@ -10,6 +10,7 @@ class IslandInline(admin.TabularInline):
     
 class ScreenAdmin(admin.ModelAdmin):
     inlines = [IslandInline]
+    readonly_fields = ['uuid']
 admin.site.register(Screen, ScreenAdmin)
 class IslandAdmin(admin.ModelAdmin):    
     list_display = ['id', 'name', 'screen']

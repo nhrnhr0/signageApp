@@ -71,7 +71,7 @@ class AuthService {
             {
                 url = window.location.pathname;
             }
-            goto('/login?next=' + url);
+            goto('/dashboard/login?next=' + url);
         }
     }
 }

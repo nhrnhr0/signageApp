@@ -28,11 +28,11 @@ urlpatterns = [
     path('api-token-auth/', obtain_auth_token),
 
     path('playlists/', playlists_view, name='playlists'),
-    path('playlists/<uuid:pk>/', playlist_detail_view, name='playlist-detail'),
-    path('playlists/<uuid:pk>/upload-asset/', playlist_upload_asset, name='playlist-assets'),
+    path('playlists/<str:pk>/', playlist_detail_view, name='playlist-detail'),
+    path('playlists/<str:pk>/upload-asset/', playlist_upload_asset, name='playlist-assets'),
     
     path('screens/', screens_view, name='screens'),
-    path('screens/<uuid:pk>/', screen_detail_view, name='screen-detail'),
+    path('screens/<str:pk>/', screen_detail_view, name='screen-detail'),
     path('screens-islands/', screens_islands_view, name='screens-islands'),
     path('screens/display/<str:code>/', screen_display_view, name='screens-display'),
 ]

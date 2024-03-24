@@ -98,4 +98,22 @@
 			</div>
 		</form>
 	</div>
+
+	<div class="container iframe-container mt-5">
+		<h2>דמו</h2>
+		<iframe src="/display/{screen.code}" width="100%" height="100%" frameborder="0" class="iframe"
+		></iframe>
+	</div>
 {/if}
+
+<style>
+	.iframe-container {
+		padding: 0px;
+	}
+	.iframe-container .iframe {
+		aspect-ratio: 16 / 9;
+		border: 1px solid black;
+		width: 100%; /* change this to a fixed width, or create a container with a width. */
+		height: 100%;
+	}
+</style>

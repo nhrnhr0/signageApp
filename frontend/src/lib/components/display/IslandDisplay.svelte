@@ -3,7 +3,9 @@
 
 	import { BACKEND_MEDIA_URL } from '$lib/consts';
 	import { onMount } from 'svelte';
-
+	/**
+	 * @type {import('$lib/types').Island|null}
+	 */
 	export let island = null;
 	/**
 	 * @type {Array<{type: 'image' | 'video', media: string, duration: number}>}
@@ -119,13 +121,13 @@
 		max-height: 100%;
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
+		object-fit: fill;
 	}
 	.asset video {
 		max-width: 100%;
 		max-height: 100%;
 		width: 100%;
 		height: 100%;
-		object-fit: contain;
+		object-fit: fill;
 	}
 </style>
