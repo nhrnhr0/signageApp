@@ -7,11 +7,9 @@
 	import AddOrCreatePlaylist from '../AddOrCreatePlaylist.svelte';
 	export let screen;
 	function playlist_updated(playlist) {
-		console.log('playlist_updated', playlist);
 		screen = { ...screen };
 	}
 	function handle_edit_playlist_btn(playlist) {
-		console.log('handle_edit_playlist_btn');
 		openModal(EditPlaylistModal, {
 			playlist_uuid: playlist.uuid,
 			onUpdated: playlist_updated

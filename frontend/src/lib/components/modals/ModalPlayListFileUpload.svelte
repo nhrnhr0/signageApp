@@ -9,7 +9,6 @@
 	export let playlist;
 	export let onUpdated;
 	function asset_added(event) {
-		console.log('asset_added', event.detail);
 		let playlist = event.detail;
 		onUpdated(playlist);
 		closeModal();

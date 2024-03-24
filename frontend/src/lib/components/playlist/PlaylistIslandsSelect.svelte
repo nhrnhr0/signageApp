@@ -8,20 +8,7 @@
 	let selected_items = [];
 
 	onMount(() => {
-		console.log('playlist', playlist);
 		ScreensService.getAllScreensAndIslands().then((data) => {
-			console.log('getAllScreensAndIslands', data);
-			// [
-			//     {
-			//         "uuid": "ea273727-337f-4974-b3d3-9fac680bab4d",
-			//         "name": "מסך 1",
-			//         "is_active": true,
-			//         "islands": [
-			//             {
-			//                 "id": 15,
-			//                 "name": "ראשי"
-			//             },.....
-			// convert to {label: "ראשי", value: 15, group: "מסך 1"}
 			items = data.map((screen) => {
 				return screen.islands.map((island) => {
 					return {

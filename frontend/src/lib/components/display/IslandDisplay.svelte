@@ -21,19 +21,21 @@
 		if (display_content.length === 0) return;
 		let idx = (current_asset_index + 1) % display_content.length;
 		current_asset_index = idx;
-		console.log(island.name + 'current_asset_index', current_asset_index, display_content);
 		if (display_content[idx].type === 'image') {
 			clearTimeout(next_asset_timeout);
 			next_asset_timeout = setTimeout(next_asset, display_content[idx].duration * 1000);
 		} else if (display_content[idx].type === 'video') {
 			clearTimeout(next_asset_timeout);
-			if (display_content[i].duration !== -1) {
+			if (display_content[idx].duration !== -1) {
 				next_asset_timeout = setTimeout(next_asset, display_content[idx].duration * 1000);
 			} else {
 				// next when video ends
 				setTimeout(() => {
 					let vid = document.querySelector('video');
 					if (vid) {
+						// set video to play again
+						vid.currentTime = 0;
+						vid.play();
 						vid.addEventListener('ended', next_asset);
 					} else {
 						next_asset();
@@ -49,7 +51,6 @@
 	onMount(() => {
 		generate_display_content();
 		current_asset_index = -1;
-		debugger;
 		next_asset();
 	});
 
@@ -82,33 +83,23 @@
 {#if island.playlists.length === 0}
 	<p>אין תוכן להצגה</p>
 {:else}
-	<div class="asset-container">
-		{#each display_content as asset, i}
-			<!-- {#if i === current_asset_index} -->
-			<div
-				class="asset"
-				transition:fade
-				style="display: {i === current_asset_index ? 'flex' : 'none'}"
-			>
-				{#if asset.type === 'video'}
-					<video src="{BACKEND_MEDIA_URL}{asset.media}" autoplay loop muted></video>
-				{:else if asset.type === 'image'}
-					<img src="{BACKEND_MEDIA_URL}{asset.media}" />
-				{/if}
-			</div>
-			<!-- {/if} -->
-		{/each}
-	</div>
+	{#each display_content as asset, i}
+		<div
+			class="asset"
+			transition:fade
+			style="display: {i === current_asset_index ? 'flex' : 'none'}"
+		>
+			{#if asset.type === 'video'}
+				<video src="{BACKEND_MEDIA_URL}{asset.media}" autoplay muted loop={asset.duration !== -1}
+				></video>
+			{:else if asset.type === 'image'}
+				<img src="{BACKEND_MEDIA_URL}{asset.media}" />
+			{/if}
+		</div>
+	{/each}
 {/if}
 
 <style>
-	.asset-container {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
 	.asset {
 		width: 100%;
 		height: 100%;
@@ -117,17 +108,19 @@
 		align-items: center;
 	}
 	.asset img {
+		height: 100%;
+		width: 100%;
 		max-width: 100%;
 		max-height: 100%;
-		width: 100%;
-		height: 100%;
+
 		object-fit: fill;
 	}
 	.asset video {
+		height: 100%;
+		width: 100%;
 		max-width: 100%;
 		max-height: 100%;
-		width: 100%;
-		height: 100%;
+
 		object-fit: fill;
 	}
 </style>

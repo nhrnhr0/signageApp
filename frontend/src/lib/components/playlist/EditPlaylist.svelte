@@ -10,12 +10,9 @@
 		submiting = true;
 		PlaylistService.updateOrCreatePlaylist(playlist)
 			.then((resp) => {
-				console.log(resp);
 				dispatch('save', playlist);
 			})
-			.catch((e) => {
-				console.log(e);
-			})
+			.catch((e) => {})
 			.finally(() => {
 				submiting = false;
 			});

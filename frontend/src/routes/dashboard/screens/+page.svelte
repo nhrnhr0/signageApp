@@ -10,7 +10,6 @@
 			let resp = await ScreensService.getScreens();
 			screens = resp;
 		} catch (e) {
-			console.log(e);
 			screens = [];
 		}
 	});

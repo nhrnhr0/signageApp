@@ -10,7 +10,6 @@
 			let resp = await PlaylistsService.getPlaylists();
 			playlists = resp;
 		} catch (e) {
-			console.log(e);
 			playlists = [];
 		}
 	});

@@ -2,7 +2,6 @@
 	export let screen;
 
 	function handle_edit_playlist_btn(playlist) {
-		console.log('handle_edit_playlist_btn');
 		openModal(EditPlaylistModal, {
 			playlist_uuid: playlist.uuid
 		});

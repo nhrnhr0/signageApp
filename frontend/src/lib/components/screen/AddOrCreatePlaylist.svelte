@@ -22,7 +22,6 @@
 		return options;
 	}
 	function option_added(e) {
-		debugger;
 		let item = e.detail;
 		island.playlists.push(item);
 		island = { ...island };

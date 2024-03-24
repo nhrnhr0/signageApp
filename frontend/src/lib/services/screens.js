@@ -7,7 +7,6 @@ class ScreensService {
     }
 
     async getScreens() {
-        debugger;
         const response = await my_fetch(this.baseUrl);
         return response.json();
     }
@@ -58,7 +57,6 @@ class ScreensService {
      * @returns {Promise<Object>} - A promise that resolves to the JSON response from the server.
      */
     async uploadAsset(screenId, file, duration, type) {
-        debugger;
         const formData = new FormData();
         formData.append("file", file);
         formData.append("duration", duration);

@@ -2,7 +2,6 @@
 	import IslandDisplay from './IslandDisplay.svelte';
 
 	export let data;
-	console.log('data', data);
 </script>
 
 <!-- grid taking all the screen
@@ -48,6 +47,8 @@ each part will have a svelte component that will show the playlist (data.islands
 	.small-wrapper {
 		display: grid;
 		grid-template-columns: 25% 25% 25% 25%;
+		grid-template-rows: 100%;
+		height: 100%;
 	}
 
 	.small-part {

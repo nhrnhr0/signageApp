@@ -8,14 +8,10 @@
 
 	function upload_asset_btn() {
 		// open the upload asset modal
-		console.log('upload_asset_btn');
 
 		openModal(ModalPlayListFileUpload, {
 			playlist: playlist,
 			onUpdated: (_playlist) => {
-				// playlist.assets.push(asset);
-				// playlist.assets = [...playlist.assets];
-				// console.log('onAdded', asset);
 				playlist = _playlist;
 			}
 		});

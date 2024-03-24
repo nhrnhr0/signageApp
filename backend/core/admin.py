@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Screen, Island, Playlist, Asset
+from django.utils.safestring import mark_safe
 # Register your models here.
 
 class IslandInline(admin.TabularInline):
@@ -21,6 +22,14 @@ class PlaylistAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Playlist, PlaylistAdmin)
 class AssetAdmin(admin.ModelAdmin):
+    list_display = ['id', 'image_disaply','name', 'type', 'duration','display_playlists']
     
-    pass
+    def image_disaply(self, obj):
+        if obj.type == 'image':
+            return mark_safe('<img src="{}" width="100" />'.format(obj.media.url))
+        return ''
+    
+    def display_playlists(self, obj):
+        return ', '.join([playlist.name for playlist in obj.playlist.all()])
+    display_playlists.short_description = 'Playlists' 
 admin.site.register(Asset, AssetAdmin)

@@ -11,16 +11,13 @@
 	export let onUpdated;
 	let playlist;
 	function asset_added(event) {
-		console.log('asset_added', event.detail);
 		let playlist = event.detail;
 		onUpdated(playlist);
 		closeModal();
 	}
 	onMount(() => {
-		console.log('EditPlaylistModal onMount');
 		if (playlist_uuid) {
 			PlaylistSerice.getPlaylist(playlist_uuid).then((data) => {
-				console.log('EditPlaylistModal onMount getPlaylist', data);
 				playlist = data;
 			});
 		} else {

@@ -62,8 +62,7 @@ class PlaylistsService {
      * @returns {Promise<Object>} - A promise that resolves to the JSON response from the server.
      */
     async uploadAsset(playlistId, file, duration, type) {
-        debugger;
-        const formData = new FormData();
+=        const formData = new FormData();
         formData.append("file", file);
         formData.append("duration", duration);
         formData.append("type", type);
@@ -100,21 +99,19 @@ class PlaylistsService {
     }
 
     async createPlaylist(data) {
-        debugger;
-        let ret = await my_fetch(this.baseUrl, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
+=        let ret = await my_fetch(this.baseUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
         let ret2 = await ret.json();
         return ret2;
     }
 
     async updateOrCreatePlaylist(playlist) {
-        debugger;
-        if (playlist?.uuid)
+=        if (playlist?.uuid)
         {
             return this.updatePlaylist(playlist.uuid, playlist);
         } else

@@ -8,7 +8,6 @@
 	const code = $page.params.code;
 	let data = null;
 	onMount(async () => {
-		console.log('code', code);
 		ScreenService.getScrenDisplayByCode(code).then((_data) => {
 			data = _data;
 		});
