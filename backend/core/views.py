@@ -15,7 +15,7 @@ def playlists_view(request):
         playlist = Playlist.objects.create(
             name=request.data['name']
         )
-        playlist.is_active = True if request.data.get('is_active','') == 'on' else False
+        playlist.schedule = request.data.get('schedule',{})
         playlist.save()
         serializer = PlaylistDetailSerializer(playlist)
         return Response(serializer.data)
@@ -32,7 +32,8 @@ def playlists_view(request):
 def playlist_detail_view(request, pk):
     if request.method == 'PUT':
         playlist = Playlist.objects.get(uuid=pk)
-        playlist.is_active = request.data.get('is_active',False)
+        # playlist.is_active = request.data.get('is_active',False)
+        playlist.schedule = request.data.get('schedule',{})
         playlist.name = request.data['name']
         #request.data.get('islands') = [{'id': 15, 'name': 'ראשי'}, {'id': 16, 'name': 'תת תצוגה 1'}]
         islands_ids = [i['id'] for i in request.data.get('islands',[])]
@@ -77,9 +78,25 @@ def screens_view(request):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@api_view(['GET','PUT'])
 @permission_classes([IsAuthenticated])
 def screen_detail_view(request, pk):
+    if request.method == 'PUT':
+        screen = Screen.objects.get(uuid=pk)
+        screen.name = request.data['name']
+        screen.layout = request.data['layout']
+        screen.is_active = request.data.get('is_active',False)
+        islands = request.data.get('islands',[])
+        for island in islands:
+            playlists = island.get('playlists',[])
+            playlists_uuids = [p['uuid'] for p in playlists]
+            island_obj = screen.islands.get(id=island['id'])
+            island_obj.playlists.clear()
+            
+            island_obj.playlists.add(*playlists_uuids)
+        screen.save()
+        
+        
     screen = Screen.objects.prefetch_related('islands','islands__playlists').get(uuid=pk)
     serializer = ScreenDetailSerializer(screen)
     return Response(serializer.data)

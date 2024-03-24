@@ -9,5 +9,5 @@
 {#if screen.layout === 'FullScreen'}
 	<DashboardFullScreen {screen} />
 {:else if screen.layout === 'MainWith4Subs'}
-	<DashboardMainWith4Subs {screen} />
+	<DashboardMainWith4Subs bind:screen />
 {/if}

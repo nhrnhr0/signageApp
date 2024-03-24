@@ -3,6 +3,11 @@
 	import PlaylistService from '$lib/services/playlists';
 	import { createEventDispatcher } from 'svelte';
 	import PlaylistIslandsSelect from './PlaylistIslandsSelect.svelte';
+	import PlaylistScheduleEdit from './PlaylistScheduleEdit.svelte';
+	import { is_schedual_active } from '$lib/utils';
+	import IconYes from '../icons/IconYes.svelte';
+	import IconNo from '../icons/IconNo.svelte';
+
 	export const dispatch = createEventDispatcher();
 	export let playlist;
 	let submiting = false;
@@ -30,13 +35,12 @@
 	<form action="" method="post" enctype="multipart/form-data">
 		<!-- is_active -->
 		<div class="form-group form-check">
-			<input
-				type="checkbox"
-				class="form-check-input"
-				id="is_active"
-				name="is_active"
-				bind:checked={playlist.is_active}
-			/>
+			{#if is_schedual_active(playlist.schedule)}
+				<IconYes />
+			{:else}
+				<IconNo />
+			{/if}
+
 			<label class="form-check-label" for="is_active">פעיל</label>
 		</div>
 		<!-- name -->
@@ -48,6 +52,11 @@
 		<div class="form-group">
 			<label for="">פעיל במסכים</label>
 			<PlaylistIslandsSelect {playlist} />
+		</div>
+		<!-- schedule -->
+		<div class="form-group">
+			<label for="schedule">לוח זמנים</label>
+			<PlaylistScheduleEdit bind:playlist />
 		</div>
 		<button
 			type="submit"

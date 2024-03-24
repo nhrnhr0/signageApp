@@ -29,15 +29,15 @@
 </script>
 
 <div class="row">
-	{#key island.playlists}
-		<Select
-			{loadOptions}
-			placeholder="הוסף פלייליסט"
-			on:change={(e) => option_added(e)}
-			multiple={false}
-			itemId="uuid"
-		>
-			<div slot="item" let:item let:index>{item.name}</div>
-		</Select>
-	{/key}
+	<!-- {#key island.playlists} -->
+	<Select
+		{loadOptions}
+		placeholder="הוסף פלייליסט"
+		on:change={(e) => option_added(e)}
+		multiple={false}
+		itemId="uuid"
+	>
+		<div slot="item" let:item let:index>{item.name}</div>
+	</Select>
+	<!-- {/key} -->
 </div>

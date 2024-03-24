@@ -9,6 +9,8 @@ from rest_framework.authtoken.models import Token
 from django.utils.translation import gettext_lazy as _
 import uuid
 from django.utils.text import slugify
+from django.utils import timezone
+import datetime
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -64,15 +66,16 @@ class Screen(models.Model):
             needed_islands = MainWith4Subs
         elif self.layout == 'FullScreen':
             needed_islands = FullScreen
+        
+        print('needed_islands', needed_islands, ' layout', self.layout, 'screen', self.name, 'islands', islands)
             
-            
-        for island in islands:
-            if island.name not in needed_islands:
-                island.delete()
-            else:
-                needed_islands.remove(island.name)
-        for island in needed_islands:
-            Island.objects.create(name=island, screen=self)
+        for island_name in needed_islands:
+            island = Island.objects.filter(name=island_name, screen=self).first()
+            if not island:
+                island = Island.objects.create(name=island_name, screen=self)
+            islands = Island.objects.filter(screen=self)
+            if island not in islands:
+                islands.add(island)
             
 
 class Island(models.Model):
@@ -86,17 +89,52 @@ class Island(models.Model):
     def __str__(self):
         return self.name + ' (' + ', '.join([p.name for p in self.playlists.all()]) + ')'
     
-    
+
+
+
+# SCHEDULE_TYPE_CHOICES = (
+#     ('OnOff', _('On/Off')),
+#     ('BetweenDates', _('Between dates')),
+# )
+# class Schedule(models.Model):
+#     type = models.CharField(max_length=100, verbose_name=_('Type'), choices=SCHEDULE_TYPE_CHOICES)
+#     data = models.JSONField(verbose_name=_('Data'))
+#     class Meta:
+#         verbose_name = _('Schedule')
+#         verbose_name_plural = _('Schedules')
+
 class Playlist(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
     assets = models.ManyToManyField('Asset', related_name='playlist', verbose_name=_('Assets'), blank=True)
-    is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
-    start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Start At'), default=None)
-    end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('End At'), default=None)
-    
+    # is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
+    schedule = models.JSONField(verbose_name=_('Schedule'), blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created At'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated At'))
+    
+    def is_active(self):
+        if not self.schedule:
+            return False
+        now = datetime.datetime.now()
+        if self.schedule.get('type') == 'onOff':
+            return self.schedule.get('data',False)
+        elif self.schedule.get('type') == 'betweenDates':
+            # if data.start is None, we ignore start time check
+            # if data.end is None, we ignore end time check
+            start = self.schedule.get('data',{}).get('start',None)
+            end = self.schedule.get('data',{}).get('end',None)
+            if start:
+                start = datetime.datetime.fromisoformat(start)
+                
+                if start > now:
+                    return False
+            if end:
+                end = datetime.datetime.fromisoformat(end)
+                if end < now:
+                    return False
+            return True
+        return False
+    is_active.boolean = True
     class Meta:
         verbose_name = _('Playlist')
         verbose_name_plural = _('Playlists')

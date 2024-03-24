@@ -18,6 +18,8 @@ class IslandAdmin(admin.ModelAdmin):
     pass
 admin.site.register(Island, IslandAdmin)
 class PlaylistAdmin(admin.ModelAdmin):
+    list_display = ['uuid', 'name', 'is_active']
+    readonly_fields = ['uuid', 'is_active']
     filter_horizontal = ('assets',)
     pass
 admin.site.register(Playlist, PlaylistAdmin)
@@ -33,3 +35,6 @@ class AssetAdmin(admin.ModelAdmin):
         return ', '.join([playlist.name for playlist in obj.playlist.all()])
     display_playlists.short_description = 'Playlists' 
 admin.site.register(Asset, AssetAdmin)
+
+
+

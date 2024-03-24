@@ -77,6 +77,17 @@ class ScreensService {
         const response = await my_fetch(`${this.baseUrl}display/${code}/`);
         return response.json();
     }
+
+    async updateScreen(screen) {
+        const response = await my_fetch(`${this.baseUrl}${screen.uuid}/`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(screen),
+        });
+        return response.json();
+    }
 }
 
 export default new ScreensService();

@@ -3,7 +3,6 @@
 	import { BACKEND_MEDIA_URL, BACKEND_URL } from '$lib/consts';
 	import PlaylistService from '$lib/services/playlists';
 	import { openModal } from 'svelte-modals';
-	import IconUpload from '../icons/IconUpload.svelte';
 	export let playlist;
 
 	function upload_asset_btn() {

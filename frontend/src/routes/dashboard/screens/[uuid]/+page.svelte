@@ -12,51 +12,13 @@
 	onMount(async () => {
 		screen = await ScreenSerivce.getScreen(uuid);
 	});
+
+	async function saveScreen(event) {
+		event.preventDefault();
+		await ScreenSerivce.updateScreen(screen);
+	}
 </script>
 
-<!-- {
-    "uuid": "ea273727-337f-4974-b3d3-9fac680bab4d",
-    "name": "מסך 1",
-    "is_active": true,
-    "layout": "MainWith4Subs",
-    "islands": [
-        {
-            "id": 2,
-            "name": "Main",
-            "playlists": [
-                {
-                    "uuid": "2014e976-43df-498d-b310-2826e1731545",
-                    "name": "גנרי לכולם"
-                }
-            ]
-        },
-        {
-            "id": 7,
-            "name": "Sub1",
-            "playlists": []
-        },
-        {
-            "id": 8,
-            "name": "Sub2",
-            "playlists": []
-        },
-        {
-            "id": 9,
-            "name": "Sub3",
-            "playlists": [
-                {
-                    "uuid": "2014e976-43df-498d-b310-2826e1731545",
-                    "name": "גנרי לכולם"
-                }
-            ]
-        },
-        {
-            "id": 10,
-            "name": "Sub4",
-            "playlists": []
-        }
-    ]
-} -->
 {#if screen === null}
 	<Spinner />
 {:else}
@@ -65,7 +27,7 @@
 		<h6>
 			<a href="/display/{screen.code}" target="_blank">הצג במסך</a>
 		</h6>
-		<form action="" method="post" enctype="multipart/form-data">
+		<form action="" method="post" enctype="multipart/form-data" on:submit={saveScreen}>
 			<!-- is_active -->
 			<div class="form-group form-check">
 				<input
@@ -73,20 +35,20 @@
 					class="form-check-input"
 					id="is_active"
 					name="is_active"
-					checked={screen.is_active}
+					bind:checked={screen.is_active}
 				/>
 				<label class="form-check-label" for="is_active">פעיל</label>
 			</div>
 			<!-- name -->
 			<div class="form-group">
 				<label for="name">שם</label>
-				<input type="text" class="form-control" id="name" name="name" value={screen.name} />
+				<input type="text" class="form-control" id="name" name="name" bind:value={screen.name} />
 			</div>
 
 			<!-- layout -->
 			<div class="form-group">
 				<label for="layout">תצוגה</label>
-				<select class="form-control" id="layout" name="layout" value={screen.layout}>
+				<select class="form-control" id="layout" name="layout" bind:value={screen.layout}>
 					<option value="MainWith4Subs">ראשי עם 4 תתי תצוגה</option>
 					<option value="FullScreen">מסך מלא</option>
 				</select>
@@ -94,7 +56,11 @@
 
 			<!-- screen islands selection -->
 			<div class="form-group">
-				<ScreenIslandsManager {screen} />
+				<ScreenIslandsManager bind:screen />
+			</div>
+
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary">שמור</button>
 			</div>
 		</form>
 	</div>

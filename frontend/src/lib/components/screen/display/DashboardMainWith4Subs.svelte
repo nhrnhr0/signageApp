@@ -5,9 +5,14 @@
 	import EditPlaylistModal from '$lib/components/modals/EditPlaylistModal.svelte';
 	import PlaylistSerice from '$lib/services/playlists';
 	import AddOrCreatePlaylist from '../AddOrCreatePlaylist.svelte';
+	import IconYes from '$lib/components/icons/IconYes.svelte';
+	import IconNo from '$lib/components/icons/IconNo.svelte';
+	import { onMount } from 'svelte';
 	export let screen;
+	let all_options = [];
 	function playlist_updated(playlist) {
-		screen = { ...screen };
+		alert('playlist updated');
+		debugger;
 	}
 	function handle_edit_playlist_btn(playlist) {
 		openModal(EditPlaylistModal, {
@@ -15,6 +20,21 @@
 			onUpdated: playlist_updated
 		});
 	}
+
+	async function loadOptions() {
+		let resp = await PlaylistSerice.getPlaylists();
+		let options = resp.map((playlist) => {
+			return {
+				uuid: playlist.uuid,
+				name: playlist.name,
+				is_active: playlist.is_active
+			};
+		});
+		return options;
+	}
+	onMount(async () => {
+		all_options = await loadOptions();
+	});
 </script>
 
 <div class="wraper">
@@ -23,12 +43,17 @@
 			<div class="my-card">
 				<div class="card-body">
 					{#if screen}
-						<p class="card-text">{screen.islands[0].name}:</p>
+						<p class="card-text">{screen.islands[0]?.name}:</p>
 						<AddOrCreatePlaylist bind:island={screen.islands[0]} />
 						<ul>
 							{#each screen.islands[0].playlists as playlist}
 								<li>
 									<div>
+										{#if playlist.is_active}
+											<IconYes />
+										{:else}
+											<IconNo />
+										{/if}
 										{playlist.name}
 										<small>
 											<a
@@ -40,6 +65,23 @@
 												<IconEdit />
 											</a>
 										</small>
+										<small>
+											<!-- remove btn -->
+											<button
+												type="button"
+												class="btn btn-danger btn-sm"
+												on:click={() => {
+													let response = confirm('האם אתה בטוח שברצונך להסיר את הפלייליסט?');
+													if (!response) return;
+													screen.islands[0].playlists = screen.islands[0].playlists.filter(
+														(p) => p.uuid !== playlist.uuid
+													);
+													screen = { ...screen };
+												}}
+											>
+												הסר
+											</button>
+										</small>
 									</div>
 								</li>
 							{/each}
@@ -49,7 +91,7 @@
 			</div>
 		</div>
 		<!-- 4 sub Items -->
-		{#each screen?.islands.slice(1) as island}
+		{#each screen?.islands.slice(1) as island, island_index}
 			<div class="col-3 item item-small">
 				<div class="my-card">
 					<div class="card-body">
@@ -61,6 +103,11 @@
 							{#each island.playlists as playlist}
 								<li>
 									<div>
+										{#if playlist.is_active}
+											<IconYes />
+										{:else}
+											<IconNo />
+										{/if}
 										{playlist.name}
 										<small
 											><a
@@ -72,6 +119,23 @@
 												<IconEdit /></a
 											></small
 										>
+										<small>
+											<!-- remove btn -->
+											<button
+												type="button"
+												class="btn btn-danger btn-sm"
+												on:click={() => {
+													let response = confirm('האם אתה בטוח שברצונך להסיר את הפלייליסט?');
+													if (!response) return;
+													island.playlists = island.playlists.filter(
+														(p) => p.uuid !== playlist.uuid
+													);
+													screen = { ...screen };
+												}}
+											>
+												הסר
+											</button>
+										</small>
 									</div>
 								</li>
 							{/each}
