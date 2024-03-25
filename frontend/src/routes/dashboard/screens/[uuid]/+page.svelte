@@ -16,6 +16,7 @@
 	async function saveScreen(event) {
 		event.preventDefault();
 		await ScreenSerivce.updateScreen(screen);
+		window.location.reload();
 	}
 </script>
 
@@ -50,7 +51,7 @@
 				<label for="layout">תצוגה</label>
 				<select class="form-control" id="layout" name="layout" bind:value={screen.layout}>
 					<option value="MainWith4Subs">ראשי עם 4 תתי תצוגה</option>
-					<option value="FullScreen">מסך מלא</option>
+					<!-- <option value="FullScreen">מסך מלא</option> -->
 				</select>
 			</div>
 

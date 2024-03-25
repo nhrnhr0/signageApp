@@ -49,11 +49,11 @@
 							{#each screen.islands[0].playlists as playlist}
 								<li>
 									<div>
-										{#if playlist.is_active}
+										<!-- {#if playlist.is_active}
 											<IconYes />
 										{:else}
 											<IconNo />
-										{/if}
+										{/if} -->
 										{playlist.name}
 										<small>
 											<a
@@ -103,11 +103,11 @@
 							{#each island.playlists as playlist}
 								<li>
 									<div>
-										{#if playlist.is_active}
+										<!-- {#if playlist.is_active}
 											<IconYes />
 										{:else}
 											<IconNo />
-										{/if}
+										{/if} -->
 										{playlist.name}
 										<small
 											><a
