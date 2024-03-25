@@ -153,6 +153,7 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
+    'https://sig.ms-global.co.il',
     # Add other origins as needed
 ]
 
