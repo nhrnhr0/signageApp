@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8x*y3%i9l)pmk(lcw3g^ese5soo9oed30b-kkrh(7en--vx+n$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['sig.ms-global.co.il',]
+ALLOWED_HOSTS = ['sig.ms-global.co.il','127.0.0.1','home-desktop-8000.ms-global.co.il',]
 
 
 # Application definition
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     # Own apps
     'core',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -155,6 +156,7 @@ CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
     'https://sig.ms-global.co.il',
     'https://sigf.ms-global.co.il',
+    'https://home-desktop-5173.ms-global.co.il',
     # Add other origins as needed
 ]
 
