@@ -8,6 +8,8 @@
 
 	export let playlist;
 	export let onUpdated;
+	export let asset;
+	export let open_file_browser;
 	function asset_added(event) {
 		let playlist = event.detail;
 		onUpdated(playlist);
@@ -21,7 +23,7 @@
 			<!-- exit button -->
 			<button class="btn exit-btn" on:click={closeModal}>X</button>
 
-			<UploadFile {playlist} on:added={asset_added} />
+			<UploadFile {playlist} on:added={asset_added} {asset} {open_file_browser} />
 		</div>
 	</div>
 {/if}

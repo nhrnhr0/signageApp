@@ -54,12 +54,22 @@ def playlist_upload_asset(request, pk):
     print(request.data)
     # <QueryDict: {'duration': ['11.78'], 'type': ['video'], 'file': [<TemporaryUploadedFile: vid1_cropped.mp4 (video/mp4)>]}>
     # save the data as Asset
-    asset = Asset.objects.create(
-        name=request.data['file'].name,
-        media=request.data['file'],
-        type=request.data['type'],
-        duration=request.data['duration']
-    )
+    asset_id = request.data.get('asset_id',None)
+    if asset_id:
+        asset = Asset.objects.get(id=asset_id)
+    else:
+        asset = Asset.objects.create(
+            type=request.data['type'],
+            duration=request.data['duration'],
+            media=request.data['file'])
+    asset.type = request.data['type']
+    asset.duration = request.data['duration']
+    # make sure request.data['file'] is a file and not a string
+    if 'file' in request.data and not isinstance(request.data['file'], str):
+        asset.media = request.data['file']
+        
+    
+    asset.save()
     
     # add the asset to the playlist
     playlist = Playlist.objects.get(uuid=pk)
