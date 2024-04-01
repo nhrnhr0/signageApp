@@ -35,6 +35,7 @@ def playlist_detail_view(request, pk):
         # playlist.is_active = request.data.get('is_active',False)
         playlist.schedule = request.data.get('schedule',{})
         playlist.name = request.data['name']
+        playlist.is_active = request.data.get('is_active',False)
         #request.data.get('islands') = [{'id': 15, 'name': 'ראשי'}, {'id': 16, 'name': 'תת תצוגה 1'}]
         islands_ids = [i['id'] for i in request.data.get('islands',[])]
         playlist.islands.clear()
@@ -78,7 +79,15 @@ def playlist_upload_asset(request, pk):
     ret = AssetSerializer(asset)
     return Response(ret.data)
 
-
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def playlist_delete_asset(reqeust, pk, asset_id):
+    playlist = Playlist.objects.get(uuid=pk)
+    asset = playlist.assets.get(id=asset_id)
+    asset.delete()
+    playlist.save()
+    ret = AssetSerializer(asset)
+    return Response(ret.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -126,6 +135,6 @@ def screens_islands_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def screen_display_view(request, code):
-    screen = Screen.objects.get(code=code)
+    screen = Screen.objects.prefetch_related('islands','islands__playlists', 'islands__playlists__assets').get(code=code)
     serializer = ScreenDisplaySerializer(screen)
     return Response(serializer.data)

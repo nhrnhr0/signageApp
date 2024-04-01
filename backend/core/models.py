@@ -107,34 +107,11 @@ class Playlist(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, verbose_name=_('UUID'), primary_key=True)
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
     assets = models.ManyToManyField('Asset', related_name='playlist', verbose_name=_('Assets'), blank=True)
-    # is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
+    is_active = models.BooleanField(default=True, verbose_name=_('Is Active'))
     schedule = models.JSONField(verbose_name=_('Schedule'), blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created At'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated At'))
     
-    def is_active(self):
-        if not self.schedule:
-            return False
-        now = datetime.datetime.now()
-        if self.schedule.get('type') == 'onOff':
-            return self.schedule.get('data',False)
-        elif self.schedule.get('type') == 'betweenDates':
-            # if data.start is None, we ignore start time check
-            # if data.end is None, we ignore end time check
-            start = self.schedule.get('data',{}).get('start',None)
-            end = self.schedule.get('data',{}).get('end',None)
-            if start:
-                start = datetime.datetime.fromisoformat(start)
-                
-                if start > now:
-                    return False
-            if end:
-                end = datetime.datetime.fromisoformat(end)
-                if end < now:
-                    return False
-            return True
-        return False
-    is_active.boolean = True
     class Meta:
         verbose_name = _('Playlist')
         verbose_name_plural = _('Playlists')

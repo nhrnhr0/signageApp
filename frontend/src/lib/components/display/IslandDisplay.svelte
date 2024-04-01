@@ -3,6 +3,7 @@
 
 	import { BACKEND_MEDIA_URL } from '$lib/consts';
 	import { onMount } from 'svelte';
+	import { is_schedual_active } from '$lib/utils';
 	/**
 	 * @type {import('$lib/types').Island|null}
 	 */
@@ -18,8 +19,22 @@
      */
 	let next_asset_timeout = 0;
 	function next_asset() {
-		if (display_content.length === 0) return;
+		if (display_content.length === 0) {
+			generate_display_content();
+			setTimeout(next_asset, 5000);
+			return;
+		}
 		let idx = (current_asset_index + 1) % display_content.length;
+
+		// if we riched the start, we generate the display content again
+		if (idx === 0) {
+			generate_display_content();
+			if (display_content.length === 0) {
+				setTimeout(next_asset, 5000);
+				return;
+			}
+		}
+
 		current_asset_index = idx;
 		if (display_content[idx].type === 'image') {
 			clearTimeout(next_asset_timeout);
@@ -56,8 +71,11 @@
 
 	function generate_display_content() {
 		let _display_content = [];
-
 		for (let i = 0; i < island.playlists.length; i++) {
+			if (island.playlists[i].is_active === false) continue;
+			if (island.playlists[i].schedule && !is_schedual_active(island.playlists[i].schedule))
+				continue;
+
 			for (let j = 0; j < island.playlists[i].assets.length; j++) {
 				_display_content = _display_content.concat(island.playlists[i].assets[j]);
 			}
@@ -65,6 +83,7 @@
 		// prefetch all the assets
 		prefech_assets(display_content);
 		display_content = _display_content;
+		// console.log('updated display content ', island?.id, island?.name, display_content);
 	}
 	function prefech_assets(display_content) {
 		for (let i = 0; i < display_content.length; i++) {

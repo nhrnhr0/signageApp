@@ -77,7 +77,12 @@ class PlaylistsService {
         });
         return response.json();
     }
-
+    async deleteAsset(playlistId, assetId) {
+        const response = await my_fetch(`${this.baseUrl}${playlistId}/assets/${assetId}/`, {
+            method: "DELETE",
+        });
+        return response.json();
+    }
     /**
      * Updates a playlist.
      * @param {string} playlistId - The ID of the playlist.

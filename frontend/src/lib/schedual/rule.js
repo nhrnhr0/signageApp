@@ -1,7 +1,5 @@
 // export const SCHEDULE_RULE_TYPES = ['date', 'time', 'weekday', 'condition_any_of', 'condition_all_of'];
 
-import moment from "moment";
-
 
 
 export const SCHEDULE_RULE_TYPES = [{
@@ -122,11 +120,11 @@ export class ScheduleRule {
         {
 
             case 'is_before_equal':
-                date = new Date(this.value);
-                return current_date <= date;
-            case 'is_after_equal':
-                date = new Date(this.value);
+                date = new Date(this.value.date);
                 return current_date >= date;
+            case 'is_after_equal':
+                date = new Date(this.value.date);
+                return current_date <= date;
             case 'is_between':
                 let start = new Date(this.value.start);
                 let end = new Date(this.value.end);
@@ -158,7 +156,6 @@ export class ScheduleRule {
         //         return moment(current_date).isBetween(start, end);
         // }
         // Parse current value based on comparison type
-        debugger;
         let compareDate, compareStart, compareEnd;
         let comp_type = this.sub_type;
         let current_value = this.value;

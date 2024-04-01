@@ -10,4 +10,4 @@
 	<ScheduleRuleEdit bind:rule={playlist.schedule} />
 </div>
 
-<!-- {is_schedual_active(playlist.schedule)} -->
+{is_schedual_active(playlist.schedule)}

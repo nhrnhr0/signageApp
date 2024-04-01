@@ -40,6 +40,14 @@
 		});
 	}
 
+	function delete_asset(asset) {
+		PlaylistsService.deleteAsset(playlist.uuid, asset.id).then((res) => {
+			let index = playlist.assets.findIndex((a) => a.id === asset.id);
+			playlist.assets.splice(index, 1);
+			dispatch('deleted', playlist);
+		});
+	}
+
 	function file_changed(e) {
 		const file = e.target.files[0];
 		_file = file;
@@ -155,8 +163,13 @@
 			<option value="video">וידאו</option>
 		</select>
 	</div>
+	<div class="d-flex" style="justify-content: space-between;">
+		<button type="submit" class="btn btn-primary">
+			{#if asset}עדכן{:else}הוסף{/if}
+		</button>
 
-	<button type="submit" class="btn btn-primary">
-		{#if asset}עדכן{:else}הוסף{/if}
-	</button>
+		{#if asset}
+			<button type="button" class="btn btn-danger" on:click={delete_asset(asset)}> מחק </button>
+		{/if}
+	</div>
 </form>

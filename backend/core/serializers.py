@@ -32,7 +32,7 @@ class ScreenDetailSerializer(serializers.ModelSerializer):
                 playlists.append({
                     'uuid': playlist.uuid,
                     'name': playlist.name,
-                    'is_active': playlist.is_active()
+                    'is_active': playlist.is_active,
                 })
             ret.append({
                 'id': island.id,
@@ -94,7 +94,9 @@ class ScreenDisplaySerializer(serializers.ModelSerializer):
                 playlists.append({
                     'uuid': playlist.uuid,
                     'name': playlist.name,
-                    'assets': assets
+                    'assets': assets,
+                    'is_active': playlist.is_active,
+                    'schedule': playlist.schedule
                 })
             ret.append({
                 'id': island.id,

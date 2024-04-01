@@ -53,6 +53,17 @@
 			<label for="">פעיל במסכים</label>
 			<PlaylistIslandsSelect {playlist} />
 		</div>
+		<!-- is active -->
+		<div class="form-group form-check">
+			<input
+				type="checkbox"
+				class="form-check-input"
+				id="is_active"
+				name="is_active"
+				bind:checked={playlist.is_active}
+			/>
+			<label class="form-check-label" for="is_active">פעיל</label>
+		</div>
 		<!-- schedule -->
 		<div class="form-group">
 			<label for="schedule">לוח זמנים</label>
