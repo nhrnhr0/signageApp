@@ -29,11 +29,15 @@ class ScreenDetailSerializer(serializers.ModelSerializer):
         for island in obj.islands.all():
             playlists = []
             for playlist in island.playlists.all():
-                playlists.append({
-                    'uuid': playlist.uuid,
-                    'name': playlist.name,
-                    'is_active': playlist.is_active,
-                })
+                ser = PlaylistsViewSerializer(playlist)
+                playlists.append(ser.data)
+                # playlists.append({
+                #     'uuid': playlist.uuid,
+                #     'name': playlist.name,
+                #     'is_active': playlist.is_active,
+                #     'schedule': playlist.schedule
+
+                # })
             ret.append({
                 'id': island.id,
                 'name': island.name,
@@ -60,10 +64,13 @@ class IslandSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'screens')
 
 class PlaylistsViewSerializer(serializers.ModelSerializer):
+    assets__count = serializers.SerializerMethodField()
     
+    def get_assets__count(self, obj):
+        return obj.assets.count()
     class Meta:
         model = Playlist
-        fields = ('uuid', 'name', 'is_active', 'created_at', 'updated_at','is_active')
+        fields = ('uuid', 'name','assets__count', 'is_active', 'created_at', 'updated_at','schedule',)
         
 class PlaylistDetailSerializer(serializers.ModelSerializer):
     assets = AssetSerializer(many=True, read_only=True)

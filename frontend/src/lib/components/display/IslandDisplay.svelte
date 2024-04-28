@@ -81,27 +81,38 @@
 			}
 		}
 		// prefetch all the assets
-		prefech_assets(display_content);
+		//prefech_assets(display_content);
 		display_content = _display_content;
-		// console.log('updated display content ', island?.id, island?.name, display_content);
 	}
-	function prefech_assets(display_content) {
+	/*function prefech_assets(display_content) {
 		for (let i = 0; i < display_content.length; i++) {
 			let asset = display_content[i];
 			if (asset.type === 'video') {
-				let video = new Video();
-				video.src = asset.url;
+				
+
 			} else if (asset.type === 'image') {
 				let img = new Image();
 				img.src = asset.url;
 			}
 		}
-	}
+	}*/
 </script>
 
 {#if island.playlists.length === 0}
 	<p>אין תוכן להצגה</p>
 {:else}
+	<!-- in the preloader we will prefetch all the assets -->
+	<div class="preloader">
+		{#each display_content as asset, i}
+			{#if asset.type === 'video'}
+				<video src="{BACKEND_MEDIA_URL}{asset.media}" preload="true" muted>
+					<track kind="captions" />
+				</video>
+			{:else if asset.type === 'image'}
+				<img src="{BACKEND_MEDIA_URL}{asset.media}" alt="prefech" />
+			{/if}
+		{/each}
+	</div>
 	{#each display_content as asset, i}
 		<div
 			class="asset"
@@ -119,6 +130,14 @@
 {/if}
 
 <style>
+	.preloader {
+		position: absolute;
+		top: -1000px;
+		left: -1000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
 	.asset {
 		width: 100%;
 		height: 100%;

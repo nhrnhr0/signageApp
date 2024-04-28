@@ -22,6 +22,7 @@
 			() => {
 				ScreenService.getScrenDisplayByCode(code)
 					.then((_data) => {
+						console.log('fetched screen display: ', code, ' ', _data);
 						data = _data;
 					})
 					.catch((error) => {
@@ -39,17 +40,19 @@
 
 <BarcodeScannerListener
 	onScaned={(bar) => {
-		console.log(bar);
-
 		alert(bar);
 	}}
 />
 {#if data === null}
 	<div>{code}</div>
-{:else if data.layout == 'MainWith4Subs'}
-	<DisplayMainWith4Subs {data} />
-{:else if data.layout == 'FullScreen'}
-	<DisplayFullScreen {data} />
+{:else if data.is_active}
+	{#if data.layout == 'MainWith4Subs'}
+		<DisplayMainWith4Subs {data} />
+	{:else if data.layout == 'FullScreen'}
+		<DisplayFullScreen {data} />
+	{:else}
+		<div>תצוגה לא נתמכת</div>
+	{/if}
 {:else}
-	<div>Unknown layout</div>
+	<div>מסך לא פעיל</div>
 {/if}

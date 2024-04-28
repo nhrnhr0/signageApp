@@ -1,7 +1,6 @@
 // export const SCHEDULE_RULE_TYPES = ['date', 'time', 'weekday', 'condition_any_of', 'condition_all_of'];
 
 
-
 export const SCHEDULE_RULE_TYPES = [{
     name: 'date',
     label: 'תאריך',
@@ -88,10 +87,14 @@ export class ScheduleRule {
      * @returns {ScheduleRule}
      */
     static from_json(json) {
+
         let rule = new ScheduleRule();
         rule.type = json?.type || 'date';
         rule.sub_type = json?.sub_type || 'is_before_equal';
-        rule.value = json.value || {};
+        // var yesterday = new Date(Date.now() - 86400000);
+        // format as "2024-04-27"
+        rule.value = json?.value || { 'date': new Date().toISOString().split('T')[0] };
+
         let sub_rules = json?.sub_rules || [];
         rule.sub_rules = sub_rules.map((r) => ScheduleRule.from_json(r));
         return rule;
@@ -115,7 +118,6 @@ export class ScheduleRule {
 
     is_date_active(current_date) {
         let date = undefined;
-
         switch (this.sub_type)
         {
 
@@ -163,7 +165,7 @@ export class ScheduleRule {
 
         if (comp_type === 'is_before_equal' || comp_type === 'is_after_equal')
         {
-            let val = current_value.date;
+            let val = current_value.date || '00:00';
             compareDate = new Date(current_date);
             [hours, minutes] = val.split(':');
             compareDate.setHours(hours, minutes, 0, 0);
@@ -188,9 +190,9 @@ export class ScheduleRule {
         switch (comp_type)
         {
             case 'is_before_equal':
-                return current_date <= compareDate;
-            case 'is_after_equal':
                 return current_date >= compareDate;
+            case 'is_after_equal':
+                return current_date <= compareDate;
             case 'is_between':
                 return current_date >= compareStart && current_date <= compareEnd;
             default:

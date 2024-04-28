@@ -70,13 +70,12 @@ class Screen(models.Model):
         print('needed_islands', needed_islands, ' layout', self.layout, 'screen', self.name, 'islands', islands)
             
         for island_name in needed_islands:
-            island = Island.objects.filter(name=island_name, screen=self).first()
-            if not island:
-                island = Island.objects.create(name=island_name, screen=self)
-            islands = Island.objects.filter(screen=self)
-            if island not in islands:
-                islands.add(island)
-            
+            if not islands.filter(name=island_name).exists():
+                Island.objects.create(name=island_name, screen=self)
+        for island in islands:
+            if island.name not in needed_islands:
+                island.delete()
+                
 
 class Island(models.Model):
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
@@ -123,12 +122,24 @@ TYPE_CHOICES = (
     ('image', 'Image'),
     ('video', 'Video'),
 )
+
+class Publisher(models.Model):
+    name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'), unique=True)
+
+class Category(models.Model):
+    name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'), unique=True)
 class Asset(models.Model):
     name = models.CharField(max_length=100, blank=True, default='', verbose_name=_('Name'))
     media = models.FileField(upload_to='assets/', verbose_name=_('Media'))
     type = models.CharField(max_length=100, choices=TYPE_CHOICES, default='image', verbose_name=_('Type'))
-    
     duration = models.IntegerField(default=10, verbose_name=_('Duration'))
+    
+    publisher = models.ForeignKey('Publisher', related_name='assets', on_delete=models.CASCADE, verbose_name=_('Publisher'), blank=True, null=True)
+    category = models.ForeignKey('Category', related_name='assets', on_delete=models.CASCADE, verbose_name=_('Category'), blank=True, null=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created At'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated At'))
+    
 
     class Meta:
         verbose_name = _('Asset')

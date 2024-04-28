@@ -9,5 +9,3 @@
 <div class="container form-group">
 	<ScheduleRuleEdit bind:rule={playlist.schedule} />
 </div>
-
-{is_schedual_active(playlist.schedule)}

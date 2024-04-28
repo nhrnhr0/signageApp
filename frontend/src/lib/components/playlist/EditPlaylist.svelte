@@ -34,13 +34,24 @@
 	</h2>
 	<form action="" method="post" enctype="multipart/form-data">
 		<!-- is_active -->
-		<div class="form-group form-check">
+		<!-- <div class="form-group form-check">
 			{#if is_schedual_active(playlist.schedule)}
 				<IconYes />
 			{:else}
 				<IconNo />
 			{/if}
 
+			<label class="form-check-label" for="is_active">פעיל</label>
+		</div> -->
+		<!-- is active -->
+		<div class="form-group form-check">
+			<input
+				type="checkbox"
+				class="form-check-input"
+				id="is_active"
+				name="is_active"
+				bind:checked={playlist.is_active}
+			/>
 			<label class="form-check-label" for="is_active">פעיל</label>
 		</div>
 		<!-- name -->
@@ -53,20 +64,17 @@
 			<label for="">פעיל במסכים</label>
 			<PlaylistIslandsSelect {playlist} />
 		</div>
-		<!-- is active -->
-		<div class="form-group form-check">
-			<input
-				type="checkbox"
-				class="form-check-input"
-				id="is_active"
-				name="is_active"
-				bind:checked={playlist.is_active}
-			/>
-			<label class="form-check-label" for="is_active">פעיל</label>
-		</div>
+
 		<!-- schedule -->
 		<div class="form-group">
-			<label for="schedule">לוח זמנים</label>
+			<label for="schedule"
+				>לוח זמנים (
+				{#if is_schedual_active(playlist.schedule)}
+					<IconYes /> פעיל כרגע
+				{:else}
+					<IconNo /> לא פעיל כרגע
+				{/if})
+			</label>
 			<PlaylistScheduleEdit bind:playlist />
 		</div>
 		<button

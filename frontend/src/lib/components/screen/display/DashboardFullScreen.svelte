@@ -8,6 +8,7 @@
 	import IconYes from '$lib/components/icons/IconYes.svelte';
 	import IconNo from '$lib/components/icons/IconNo.svelte';
 	import { onMount } from 'svelte';
+	import { is_schedual_active } from '$lib/utils';
 	export let screen;
 	let all_options = [];
 	function playlist_updated(playlist) {}
@@ -47,32 +48,40 @@
 								<li>
 									<div>
 										{playlist.name}
+										<!-- is active  and is schedual active -->
 										<small>
-											<a
-												href="#"
-												on:click={() => {
-													handle_edit_playlist_btn(playlist);
-												}}
-											>
-												<IconEdit />
-											</a>
-										</small>
-										<small>
-											<!-- remove btn -->
-											<button
-												type="button"
-												class="btn btn-danger btn-sm"
-												on:click={() => {
-													let response = confirm('האם אתה בטוח שברצונך להסיר את הפלייליסט?');
-													if (!response) return;
-													screen.islands[0].playlists = screen.islands[0].playlists.filter(
-														(p) => p.uuid !== playlist.uuid
-													);
-													screen = { ...screen };
-												}}
-											>
-												הסר
-											</button>
+											{#if playlist.is_active && is_schedual_active(playlist.schedule)}
+												<IconYes /> פעיל כרגע, ({playlist.assets__count} פריטים)
+											{:else}
+												<IconNo /> לא פעיל כרגע ({playlist.assets__count} פריטים)
+											{/if}
+											<small>
+												<a
+													href="#"
+													on:click={() => {
+														handle_edit_playlist_btn(playlist);
+													}}
+												>
+													<IconEdit />
+												</a>
+											</small>
+											<small>
+												<!-- remove btn -->
+												<button
+													type="button"
+													class="btn btn-danger btn-sm"
+													on:click={() => {
+														let response = confirm('האם אתה בטוח שברצונך להסיר את הפלייליסט?');
+														if (!response) return;
+														screen.islands[0].playlists = screen.islands[0].playlists.filter(
+															(p) => p.uuid !== playlist.uuid
+														);
+														screen = { ...screen };
+													}}
+												>
+													הסר
+												</button>
+											</small>
 										</small>
 									</div>
 								</li>

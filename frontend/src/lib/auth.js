@@ -15,7 +15,6 @@ class AuthService {
      */
     async login(username, password) {
         const url = `${BACKEND_URL}/api-token-auth/`
-        alert('login: ' + username + ' url: ' + url)
         const response = await fetch(url, {
             method: 'POST',
             headers: {
