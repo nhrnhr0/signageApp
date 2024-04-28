@@ -2,3 +2,4 @@ env/*
 backend/db.sqlite3
 *.pyc
 backend/static/media_root/*
+backend/static/*
