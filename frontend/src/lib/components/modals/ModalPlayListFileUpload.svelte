@@ -7,8 +7,18 @@
 	export let isOpen;
 
 	export let playlist;
+	/**
+	 * @type {function}
+	 */
 	export let onUpdated;
+	export let asset;
+	export let open_file_browser;
 	function asset_added(event) {
+		let playlist = event.detail;
+		onUpdated(playlist);
+		closeModal();
+	}
+	function asset_deleted(event) {
 		let playlist = event.detail;
 		onUpdated(playlist);
 		closeModal();
@@ -21,7 +31,13 @@
 			<!-- exit button -->
 			<button class="btn exit-btn" on:click={closeModal}>X</button>
 
-			<UploadFile {playlist} on:added={asset_added} />
+			<UploadFile
+				{playlist}
+				on:added={asset_added}
+				on:deleted={asset_deleted}
+				{asset}
+				{open_file_browser}
+			/>
 		</div>
 	</div>
 {/if}

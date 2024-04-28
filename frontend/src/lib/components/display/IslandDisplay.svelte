@@ -3,6 +3,7 @@
 
 	import { BACKEND_MEDIA_URL } from '$lib/consts';
 	import { onMount } from 'svelte';
+	import { is_schedual_active } from '$lib/utils';
 	/**
 	 * @type {import('$lib/types').Island|null}
 	 */
@@ -18,8 +19,22 @@
      */
 	let next_asset_timeout = 0;
 	function next_asset() {
-		if (display_content.length === 0) return;
+		if (display_content.length === 0) {
+			generate_display_content();
+			setTimeout(next_asset, 5000);
+			return;
+		}
 		let idx = (current_asset_index + 1) % display_content.length;
+
+		// if we riched the start, we generate the display content again
+		if (idx === 0) {
+			generate_display_content();
+			if (display_content.length === 0) {
+				setTimeout(next_asset, 5000);
+				return;
+			}
+		}
+
 		current_asset_index = idx;
 		if (display_content[idx].type === 'image') {
 			clearTimeout(next_asset_timeout);
@@ -56,33 +71,48 @@
 
 	function generate_display_content() {
 		let _display_content = [];
-
 		for (let i = 0; i < island.playlists.length; i++) {
+			if (island.playlists[i].is_active === false) continue;
+			if (island.playlists[i].schedule && !is_schedual_active(island.playlists[i].schedule))
+				continue;
+
 			for (let j = 0; j < island.playlists[i].assets.length; j++) {
 				_display_content = _display_content.concat(island.playlists[i].assets[j]);
 			}
 		}
 		// prefetch all the assets
-		prefech_assets(display_content);
+		//prefech_assets(display_content);
 		display_content = _display_content;
 	}
-	function prefech_assets(display_content) {
+	/*function prefech_assets(display_content) {
 		for (let i = 0; i < display_content.length; i++) {
 			let asset = display_content[i];
 			if (asset.type === 'video') {
-				let video = new Video();
-				video.src = asset.url;
+				
+
 			} else if (asset.type === 'image') {
 				let img = new Image();
 				img.src = asset.url;
 			}
 		}
-	}
+	}*/
 </script>
 
 {#if island.playlists.length === 0}
 	<p>אין תוכן להצגה</p>
 {:else}
+	<!-- in the preloader we will prefetch all the assets -->
+	<div class="preloader">
+		{#each display_content as asset, i}
+			{#if asset.type === 'video'}
+				<video src="{BACKEND_MEDIA_URL}{asset.media}" preload="true" muted>
+					<track kind="captions" />
+				</video>
+			{:else if asset.type === 'image'}
+				<img src="{BACKEND_MEDIA_URL}{asset.media}" alt="prefech" />
+			{/if}
+		{/each}
+	</div>
 	{#each display_content as asset, i}
 		<div
 			class="asset"
@@ -100,6 +130,14 @@
 {/if}
 
 <style>
+	.preloader {
+		position: absolute;
+		top: -1000px;
+		left: -1000px;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+	}
 	.asset {
 		width: 100%;
 		height: 100%;

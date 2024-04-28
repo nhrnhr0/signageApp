@@ -56,23 +56,33 @@ class PlaylistsService {
      * Uploads assets to a playlist.
      * 
      * @param {string} playlistId - The ID of the playlist.
+     * @param {string|undefined} asset_id - The ID of the asset. If undefined, a new asset will be created.
      * @param {File} file - The files to be uploaded.
      * @param {string} duration - The duration of the asset.
      * @param {string} type - The type of the asset.
      * @returns {Promise<Object>} - A promise that resolves to the JSON response from the server.
      */
-    async uploadAsset(playlistId, file, duration, type) {
+    async uploadAsset(playlistId, asset_id, file, duration, type) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("duration", duration);
         formData.append("type", type);
+        if (asset_id)
+        {
+            formData.append("asset_id", asset_id);
+        }
         const response = await my_fetch(`${this.baseUrl}${playlistId}/upload-asset/`, {
             method: "POST",
             body: formData,
         });
         return response.json();
     }
-
+    async deleteAsset(playlistId, assetId) {
+        const response = await my_fetch(`${this.baseUrl}${playlistId}/assets/${assetId}/`, {
+            method: "DELETE",
+        });
+        return response.json();
+    }
     /**
      * Updates a playlist.
      * @param {string} playlistId - The ID of the playlist.

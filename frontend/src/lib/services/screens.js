@@ -8,7 +8,9 @@ class ScreensService {
 
     async getScreens() {
         const response = await my_fetch(this.baseUrl);
-        return response.json();
+        let ret = await response.json();
+        return ret;
+
     }
 
     /**

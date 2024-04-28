@@ -10,10 +10,7 @@
 	import { onMount } from 'svelte';
 	export let screen;
 	let all_options = [];
-	function playlist_updated(playlist) {
-		alert('playlist updated');
-		debugger;
-	}
+	function playlist_updated(playlist) {}
 	function handle_edit_playlist_btn(playlist) {
 		openModal(EditPlaylistModal, {
 			playlist_uuid: playlist.uuid,
@@ -49,11 +46,6 @@
 							{#each screen.islands[0].playlists as playlist}
 								<li>
 									<div>
-										<!-- {#if playlist.is_active}
-											<IconYes />
-										{:else}
-											<IconNo />
-										{/if} -->
 										{playlist.name}
 										<small>
 											<a

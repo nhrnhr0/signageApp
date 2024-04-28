@@ -35,6 +35,7 @@ def playlist_detail_view(request, pk):
         # playlist.is_active = request.data.get('is_active',False)
         playlist.schedule = request.data.get('schedule',{})
         playlist.name = request.data['name']
+        playlist.is_active = request.data.get('is_active',False)
         #request.data.get('islands') = [{'id': 15, 'name': 'ראשי'}, {'id': 16, 'name': 'תת תצוגה 1'}]
         islands_ids = [i['id'] for i in request.data.get('islands',[])]
         playlist.islands.clear()
@@ -54,12 +55,22 @@ def playlist_upload_asset(request, pk):
     print(request.data)
     # <QueryDict: {'duration': ['11.78'], 'type': ['video'], 'file': [<TemporaryUploadedFile: vid1_cropped.mp4 (video/mp4)>]}>
     # save the data as Asset
-    asset = Asset.objects.create(
-        name=request.data['file'].name,
-        media=request.data['file'],
-        type=request.data['type'],
-        duration=request.data['duration']
-    )
+    asset_id = request.data.get('asset_id',None)
+    if asset_id:
+        asset = Asset.objects.get(id=asset_id)
+    else:
+        asset = Asset.objects.create(
+            type=request.data['type'],
+            duration=request.data['duration'],
+            media=request.data['file'])
+    asset.type = request.data['type']
+    asset.duration = request.data['duration']
+    # make sure request.data['file'] is a file and not a string
+    if 'file' in request.data and not isinstance(request.data['file'], str):
+        asset.media = request.data['file']
+        
+    
+    asset.save()
     
     # add the asset to the playlist
     playlist = Playlist.objects.get(uuid=pk)
@@ -68,7 +79,15 @@ def playlist_upload_asset(request, pk):
     ret = AssetSerializer(asset)
     return Response(ret.data)
 
-
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def playlist_delete_asset(reqeust, pk, asset_id):
+    playlist = Playlist.objects.get(uuid=pk)
+    asset = playlist.assets.get(id=asset_id)
+    asset.delete()
+    playlist.save()
+    ret = AssetSerializer(asset)
+    return Response(ret.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -116,6 +135,6 @@ def screens_islands_view(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def screen_display_view(request, code):
-    screen = Screen.objects.get(code=code)
+    screen = Screen.objects.prefetch_related('islands','islands__playlists', 'islands__playlists__assets').get(code=code)
     serializer = ScreenDisplaySerializer(screen)
     return Response(serializer.data)

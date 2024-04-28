@@ -10,6 +10,20 @@
 
 		openModal(ModalPlayListFileUpload, {
 			playlist: playlist,
+			asset: null,
+			open_file_browser: true,
+			onUpdated: (_playlist) => {
+				playlist = _playlist;
+			}
+		});
+	}
+
+	function edit_asset_btn(asset) {
+		// open the upload asset modal
+		openModal(ModalPlayListFileUpload, {
+			playlist: playlist,
+			asset: asset,
+			open_file_browser: false,
 			onUpdated: (_playlist) => {
 				playlist = _playlist;
 			}
@@ -47,7 +61,18 @@
 			</div>
 			<div class="info">
 				<p>{asset.name}</p>
-				<p>{asset.duration} שניות</p>
+				<div class="sub-info">
+					<p>{asset.duration} שניות</p>
+					<p>
+						<!-- Edit button btn -->
+						<button
+							class="btn btn-link"
+							on:click|preventDefault={() => {
+								edit_asset_btn(asset);
+							}}>ערוך</button
+						>
+					</p>
+				</div>
 			</div>
 		</div>
 
@@ -82,6 +107,24 @@
 		white-space: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+
+	.item .info .sub-info {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 0px;
+		margin: 0px;
+	}
+	.item .info .sub-info p {
+		margin: 0px;
+		padding: 0px;
+	}
+
+	.item .info .sub-info .btn-link {
+		color: white;
+		text-decoration: underline;
+		cursor: pointer;
 	}
 
 	.media-container {

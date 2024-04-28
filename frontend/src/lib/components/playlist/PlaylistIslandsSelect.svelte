@@ -20,7 +20,7 @@
 			});
 			items = items.flat();
 			selected_items = items.filter((item) => {
-				return playlist.islands.some((island) => island.id === item.value);
+				return (playlist.islands || []).some((island) => island.id === item.value);
 			});
 		});
 	});

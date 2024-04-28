@@ -1,14 +1,17 @@
 <script>
 	import { createEventDispatcher, onMount } from 'svelte';
 	import PlaylistsService from '$lib/services/playlists';
+	import { BACKEND_MEDIA_URL } from '$lib/consts';
 	const dispatch = createEventDispatcher();
 
 	export let playlist;
+	export let asset = null;
+	let file_name = asset ? asset.name : null;
+	let duration = asset ? asset.duration : null;
+	let type = asset ? asset.type : 'image';
+	let _file = asset ? BACKEND_MEDIA_URL + asset.media : null;
 
-	let file_name = null;
-	let duration = null;
-	let type = null;
-	let _file = null;
+	export let open_file_browser = false;
 
 	function submit() {
 		if (!_file) {
@@ -24,10 +27,24 @@
 		}
 	}
 	function upload() {
-		PlaylistsService.uploadAsset(playlist.uuid, _file, duration, type).then((res) => {
+		PlaylistsService.uploadAsset(playlist.uuid, asset?.id, _file, duration, type).then((res) => {
 			// add the asset to the playlist
-			playlist.assets.push(res);
+			if (!asset?.id) {
+				playlist.assets.push(res);
+			} else {
+				// update the asset
+				let index = playlist.assets.findIndex((a) => a.id === asset.id);
+				playlist.assets[index] = res;
+			}
 			dispatch('added', playlist);
+		});
+	}
+
+	function delete_asset(asset) {
+		PlaylistsService.deleteAsset(playlist.uuid, asset.id).then((res) => {
+			let index = playlist.assets.findIndex((a) => a.id === asset.id);
+			playlist.assets.splice(index, 1);
+			dispatch('deleted', playlist);
 		});
 	}
 
@@ -37,31 +54,64 @@
 		const file_extension = file.name.split('.').pop();
 		const _type = file_extension === 'mp4' ? 'video' : 'image';
 		type = _type;
+		set_file_preview(URL.createObjectURL(file), type);
+	}
+
+	// function set_file_preview(file) {
+	// 	const file_extension = file.name.split('.').pop();
+	// 	const _type = file_extension === 'mp4' ? 'video' : 'image';
+	// 	type = _type;
+	// 	let display = document.getElementById('file-display');
+	// 	if (type === 'video') {
+	// 		// get the duration of the video
+	// 		// const video = document.createElement('video');
+	// 		// video.src = URL.createObjectURL(file);
+	// 		// video.onloadedmetadata = function () {
+	// 		// 	duration = video.duration;
+	// 		// };
+	// 		duration = -1;
+	// 		display.innerHTML = `<video controls autoplay loop muted width="200">
+	//             <source src=${URL.createObjectURL(file)} type="video/mp4" />
+	//             Your browser does not support the video tag.
+	//         </video>`;
+	// 	} else {
+	// 		if (duration === null) {
+	// 			duration = 10;
+	// 		}
+	// 		display.innerHTML = `<img src=${URL.createObjectURL(file)} width="200"
+	//         alt="file" />`;
+	// 	}
+	// }
+
+	function set_file_preview(file_url, type) {
 		let display = document.getElementById('file-display');
+		if (!display) return;
 		if (type === 'video') {
-			// get the duration of the video
-			// const video = document.createElement('video');
-			// video.src = URL.createObjectURL(file);
-			// video.onloadedmetadata = function () {
-			// 	duration = video.duration;
-			// };
 			duration = -1;
-			display.innerHTML = `<video controls autoplay loop muted width="200">
-                <source src=${URL.createObjectURL(file)} type="video/mp4" />
+			display.innerHTML = `video controls autoplay loop muted width="200">
+                <source src=${file_url} type="video/mp4" />
                 Your browser does not support the video tag.
             </video>`;
-		} else {
+		}
+		if (type === 'image') {
 			if (duration === null) {
 				duration = 10;
 			}
-			display.innerHTML = `<img src=${URL.createObjectURL(file)} width="200"
-            alt="file" />`;
+			display.innerHTML = `<img src=${file_url} width="200"
+			alt="file" />`;
 		}
 	}
 	onMount(() => {
-		let el = document.querySelector('input[type="file"]#file');
-		el.focus();
-		el.click();
+		if (open_file_browser) {
+			let el = document.querySelector('input[type="file"]#file');
+			if (!el) return;
+			el.focus();
+			el.click();
+		}
+		if (asset) {
+			let _file = BACKEND_MEDIA_URL + asset.media;
+			set_file_preview(_file, asset.type);
+		}
 	});
 </script>
 
@@ -69,6 +119,7 @@
 	<!-- file -->
 	<div class="form-group">
 		<label for="file">קובץ</label>
+		<!-- {JSON.stringify(asset)} -->
 		<input
 			type="file"
 			id="file"
@@ -112,6 +163,13 @@
 			<option value="video">וידאו</option>
 		</select>
 	</div>
+	<div class="d-flex" style="justify-content: space-between;">
+		<button type="submit" class="btn btn-primary">
+			{#if asset}עדכן{:else}הוסף{/if}
+		</button>
 
-	<button type="submit" class="btn btn-primary">העלה</button>
+		{#if asset}
+			<button type="button" class="btn btn-danger" on:click={delete_asset(asset)}> מחק </button>
+		{/if}
+	</div>
 </form>
