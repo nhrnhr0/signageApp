@@ -6,25 +6,55 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import AssetSerializer
 from django.shortcuts import redirect
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
+import django_filters.rest_framework
+from django_filters import FilterSet
 # Create your views here.
 
-@api_view(['GET','POST'])
-@permission_classes([IsAuthenticated])
-def playlists_view(request):
-    if request.method == 'POST':
-        playlist = Playlist.objects.create(
-            name=request.data['name']
-        )
-        playlist.schedule = request.data.get('schedule',{})
-        playlist.save()
-        serializer = PlaylistDetailSerializer(playlist)
-        return Response(serializer.data)
-    else:
-        playlists = Playlist.objects.all()
-        if request.GET.get("search",""):
-            playlists = playlists.filter(name__icontains=request.GET.get("search",""))
-        serializer = PlaylistsViewSerializer(playlists, many=True)
-        return Response(serializer.data)
+# @api_view(['GET','POST'])
+# @permission_classes([IsAuthenticated])
+# def playlists_view(request):
+#     if request.method == 'POST':
+#         playlist = Playlist.objects.create(
+#             name=request.data['name']
+#         )
+#         playlist.schedule = request.data.get('schedule',{})
+#         playlist.save()
+#         serializer = PlaylistDetailSerializer(playlist)
+#         return Response(serializer.data)
+#     else:
+#         playlists = Playlist.objects.all()
+#         if request.GET.get("search",""):
+#             playlists = playlists.filter(name__icontains=request.GET.get("search",""))
+#         serializer = PlaylistsViewSerializer(playlists, many=True)
+class CustomResultsSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+    
+
+class PlayListsView(generics.ListCreateAPIView):
+    queryset = Playlist.objects.all()
+    serializer_class = PlaylistsViewSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = CustomResultsSetPagination
+    filter_backends = [
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend
+    ]
+    filterset_fields= {
+        'created_at': ['gte','lte'],
+        'updated_at': ['gte','lte'],
+        'is_active': ['exact'],
+    }
+    def get_queryset(self):
+        queryset = Playlist.objects.all()
+        return queryset
+
+
 
 
 @api_view(['GET','PUT'])

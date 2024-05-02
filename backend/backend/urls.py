@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
-from core.views import playlists_view,playlist_detail_view,playlist_upload_asset,playlist_delete_asset
+from core.views import playlist_detail_view,playlist_upload_asset,playlist_delete_asset, PlayListsView
 from core.views import screens_view,screen_detail_view,screens_islands_view,screen_display_view
 from products.views import find_product_view
 from django.conf import settings
@@ -28,7 +28,7 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls')),
     path('api-token-auth/', obtain_auth_token),
 
-    path('playlists/', playlists_view, name='playlists'),
+    path('playlists/', PlayListsView.as_view(), name='playlists'),
     path('playlists/<str:pk>/', playlist_detail_view, name='playlist-detail'),
     path('playlists/<str:pk>/upload-asset/', playlist_upload_asset, name='playlist-assets'),
     path('playlists/<str:pk>/assets/<str:asset_id>/', playlist_delete_asset, name='playlist-asset-detail'),

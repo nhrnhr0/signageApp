@@ -17,11 +17,6 @@ export interface Island {
     playlists: Playlist[];
 }
 
-export interface Playlist {
-    uuid: string;
-    name: string;
-    assets: Asset[];
-}
 
 export interface Asset {
     id: number;
@@ -30,3 +25,27 @@ export interface Asset {
     type: string;
     duration: number;
 }
+
+
+
+export interface Playlist {
+    uuid: string;
+    name: string;
+    assets_count: number;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    schedule: {
+        type: string;
+        data: any; // You can specify a more specific type if known
+    };
+}
+
+export interface TableHeader {
+    label: string;
+    url_key: string;
+    orderable: boolean;
+    display: string | ((handler: TableHandlerFunction) => string);
+}
+
+type TableHandlerFunction = (playlist: Playlist, header: TableHeader) => any; // You can specify a more specific return type if known

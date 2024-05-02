@@ -11,9 +11,14 @@ class PlaylistsService {
         return response.json();
     }
 
-
-    async getPlaylists() {
-        const response = await my_fetch(this.baseUrl);
+    /**
+     * 
+     * @param {string} search
+     * @returns 
+     */
+    async getPlaylists(search = undefined) {
+        console.log(search);
+        const response = await my_fetch(this.baseUrl + (search ? `${search}` : ""));
         return response.json();
     }
 
