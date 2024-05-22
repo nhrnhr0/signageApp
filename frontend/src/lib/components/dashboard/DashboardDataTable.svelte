@@ -1,5 +1,6 @@
 <!-- Data table -->
 <script>
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import { onMount } from 'svelte';
 
@@ -12,7 +13,10 @@
 	 * @type {import('$lib/types').TableHeader[]}
 	 */
 	export let headers = []; //headers={[{label: 'מזהה',url_key: 'uuid',orderable: true,type: (playlist) => {return `<a href="/dashboard/playlists/${playlist.uuid}">${playlist.uuid}</a>`;}},{label: 'שם',url_key: 'name',orderable: true,type: 'text'},{label: 'מספר פריטים',url_key: 'assets__count',orderable: true,type: 'number'},{label: 'האם פעיל',url_key: 'is_active',orderable: true,type: 'boolean'},{label: 'נוצר בתאריך',url_key: 'created_at',orderable: true,type: 'date'},{label: 'עודכן בתאריך',url_key: 'updated_at',orderable: true,type: 'date'}]}
-	let order_by = $page.url.searchParams.get('order_by') || undefined;
+	let order_by = undefined;
+	if (browser && $page.url.searchParams.get('order_by')) {
+		order_by = $page.url.searchParams.get('order_by');
+	}
 	/**
 	 * @type {Object<string, import('$lib/types').TableHandlerFunction>}
 	 */

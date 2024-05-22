@@ -1,41 +1,41 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { BACKEND_URL } from './consts';
+import { BACKEND_URL, SSO_FRONTEND_URL } from './consts';
 import { writable } from 'svelte/store';
 import { get } from 'svelte/store';
 // export auth store:
 
 class AuthService {
     is_logged_in = writable(browser ? localStorage.getItem('token') !== null : true);
-    /**
-     * 
-     * @param {string} username
-     * @param {string} password 
-     * @returns {Promise<boolean>}
-     */
-    async login(username, password) {
-        const url = `${BACKEND_URL}/api-token-auth/`
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ username, password })
-        });
-        if (response.status === 200)
-        {
-            const data = await response.json();
-            if (browser)
-            {
-                localStorage.setItem('token', data.token);
-            }
-            this.is_logged_in.set(true);
-            return true;
-        } else
-        {
-            return false;
-        }
-    }
+    // /**
+    //  * 
+    //  * @param {string} username
+    //  * @param {string} password 
+    //  * @returns {Promise<boolean>}
+    //  */
+    // async login(username, password) {
+    //     const url = `${BACKEND_URL}/api-token-auth/`
+    //     const response = await fetch(url, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify({ username, password })
+    //     });
+    //     if (response.status === 200)
+    //     {
+    //         const data = await response.json();
+    //         if (browser)
+    //         {
+    //             localStorage.setItem('token', data.token);
+    //         }
+    //         this.is_logged_in.set(true);
+    //         return true;
+    //     } else
+    //     {
+    //         return false;
+    //     }
+    // }
 
     logout() {
         if (browser)
@@ -56,7 +56,34 @@ class AuthService {
     getToken() {
         if (browser)
         {
-            return localStorage.getItem('token');
+            let token = JSON.parse(localStorage.getItem('token'));
+            return token.access;
+        }
+    }
+
+    try_login_from_page_auth() {
+        if (browser)
+        {
+            const token_b64Safe = new URLSearchParams(window.location.search).get('auth_token');
+            if (token_b64Safe !== null)
+            {
+                // encode token
+                // let auth_b64 = window.btoa(JSON.stringify($auth_token));
+                // let auth_b64Safe = encodeURIComponent(auth_b64);
+                // let url = `${data.url}/display/?screen_id=${screen_id}&auth_token=${auth_b64Safe}`;
+                // decode token
+                const token = JSON.parse(window.atob(token_b64Safe));
+
+                localStorage.setItem('token', JSON.stringify(token));
+                this.is_logged_in.set(true);
+
+                // remove token from url
+                let url = window.location.href;
+                url = url.replace(`?auth_token=${token_b64Safe}`, '');
+                window.history.replaceState({}, document.title, url);
+                return true;
+            }
+            return false;
         }
     }
 
@@ -65,14 +92,18 @@ class AuthService {
      * @param {string|undefined} url 
      */
     protected_route(url = undefined) {
-
         if (browser && !get(this.is_logged_in))
         {
+            if (this.try_login_from_page_auth())
+            {
+                return;
+            }
+
             if (url === undefined)
             {
-                url = window.location.pathname;
+                url = window.location;
             }
-            goto('/dashboard/login?next=' + url);
+            window.location = SSO_FRONTEND_URL + '/login?next=' + url;
         }
     }
 }

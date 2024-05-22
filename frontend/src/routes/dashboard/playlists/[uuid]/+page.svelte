@@ -6,15 +6,18 @@
 	import { onMount } from 'svelte';
 	import EditPlaylist from '$lib/components/playlist/EditPlaylist.svelte';
 	import { goto } from '$app/navigation';
+	import { browser } from '$app/environment';
+
 	AuthService.protected_route();
-	const uuid = $page.params.uuid;
+	let uuid = undefined;
 	let playlist = null;
 	onMount(async () => {
+		uuid = $page.params.uuid;
 		playlist = await PlaylistsService.getPlaylist(uuid);
 	});
 </script>
 
-{#if playlist === null}
+{#if playlist === null || !uuid}
 	<Spinner />
 {:else}
 	<EditPlaylist

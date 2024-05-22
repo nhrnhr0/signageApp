@@ -7,6 +7,7 @@
 	import DashboardSideFilters from '$lib/components/dashboard/DashboardSideFilters.svelte';
 	import { goto } from '$app/navigation';
 	import DashboardDataTable from '$lib/components/dashboard/DashboardDataTable.svelte';
+	import { browser } from '$app/environment';
 	AuthService.protected_route();
 	let resp = undefined;
 
@@ -67,7 +68,7 @@
 				count={resp?.count}
 				next={resp?.next}
 				previous={resp?.previous}
-				current={$page.url.searchParams.get('page') || '1'}
+				current={(browser && $page.url.searchParams.get('page')) || '1'}
 				page_size={resp?.page_size || '5'}
 				on:goToPage={goToPage}
 			/>

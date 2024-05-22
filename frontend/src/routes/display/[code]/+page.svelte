@@ -13,6 +13,7 @@
 	let data = null;
 	let interval = null;
 	onMount(async () => {
+		debugger;
 		ScreenService.getScrenDisplayByCode(code).then((_data) => {
 			data = _data;
 		});
