@@ -22,11 +22,13 @@ from core.views import screens_view,screen_detail_view,screens_islands_view,scre
 from products.views import find_product_view
 from django.conf import settings
 from django.conf.urls.static import static
-
+from core.views import test, api_register_screen,redirect_to_display
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('api-auth/', include('rest_framework.urls')),
     path('api-token-auth/', obtain_auth_token),
+    
+    path('api/register-screen/', api_register_screen),
 
     path('playlists/', PlayListsView.as_view(), name='playlists'),
     path('playlists/<str:pk>/', playlist_detail_view, name='playlist-detail'),
@@ -39,6 +41,8 @@ urlpatterns = [
     path('screens/display/<str:code>/', screen_display_view, name='screens-display'),
     
     path('products/find/<str:barcode>', find_product_view, name='find-product'),
+    path('test/', test, name='test'),
+    path('display/', redirect_to_display),
 ]
 if settings.DEBUG:
     urlpatterns = urlpatterns + \

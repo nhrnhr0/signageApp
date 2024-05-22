@@ -38,7 +38,7 @@ class Screen(models.Model):
     code = models.CharField(max_length=100, unique=True, verbose_name=_('Code'))
     is_active = models.BooleanField(default=False, verbose_name=_('Is Active'))
     
-    layout = models.CharField(max_length=100, choices=SCREEN_LAYOUT_CHOICES, default='MainWith4Subs', verbose_name=_('Layout'))
+    layout = models.CharField(max_length=100, choices=SCREEN_LAYOUT_CHOICES, default='FullScreen', verbose_name=_('Layout'))
     # islands = models.ManyToManyField('Island', related_name='screens', verbose_name=_('Islands'), blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created At'))

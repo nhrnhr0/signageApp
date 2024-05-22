@@ -11,19 +11,26 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
+SSO_BACKEND_URL = env('SSO_BACKEND_URL')
+FROENTEND_URL = env('FROENTEND_URL')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-8x*y3%i9l)pmk(lcw3g^ese5soo9oed30b-kkrh(7en--vx+n$'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['sig.ms-global.co.il','127.0.0.1','home-desktop-8000.ms-global.co.il',]
 
@@ -150,16 +157,14 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'core.authentication.SSOAuthentication',
+        
     ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
 CORS_ORIGIN_WHITELIST = [
-    'http://localhost:5173',
-    'https://sig.ms-global.co.il',
-    'https://sigf.ms-global.co.il',
-    'https://home-desktop-5173.ms-global.co.il',
-    # Add other origins as needed
+    FROENTEND_URL,
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")

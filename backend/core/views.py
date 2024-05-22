@@ -11,6 +11,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
 import django_filters.rest_framework
 from django_filters import FilterSet
+from django.conf import settings
 # Create your views here.
 
 # @api_view(['GET','POST'])
@@ -168,3 +169,29 @@ def screen_display_view(request, code):
     screen = Screen.objects.prefetch_related('islands','islands__playlists', 'islands__playlists__assets').get(code=code)
     serializer = ScreenDisplaySerializer(screen)
     return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def test(reqest):
+    return Response({'test':'ok', 'user': reqest.user.username})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def api_register_screen(request):
+    screen = Screen.objects.create(
+        name=request.data['screen_name'],
+        code=request.data['screen_id'],
+        is_active=True
+    )
+    screen.save()
+    return Response({'status':'ok'})
+
+
+
+def redirect_to_display(request):
+    url = settings.FROENTEND_URL + '/display/' + request.GET.get('screen_id','') + '?auth_token=' + request.GET.get('auth_token','')
+    print(url)
+    return redirect(url)
