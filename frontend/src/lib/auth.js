@@ -72,7 +72,7 @@ class AuthService {
                 // let auth_b64Safe = encodeURIComponent(auth_b64);
                 // let url = `${data.url}/display/?screen_id=${screen_id}&auth_token=${auth_b64Safe}`;
                 // decode token
-                const token = JSON.parse(window.atob(token_b64Safe));
+                const token = JSON.parse(window.atob(decodeURIComponent(token_b64Safe)));
 
                 localStorage.setItem('token', JSON.stringify(token));
                 this.is_logged_in.set(true);
