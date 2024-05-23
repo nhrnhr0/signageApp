@@ -29,8 +29,11 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG')
-
-ALLOWED_HOSTS = ['sig.ms-global.co.il','127.0.0.1','home-desktop-8000.ms-global.co.il',]
+BACKEND_URL = os.getenv('BACKEND_URL')
+ALLOWED_HOST = BACKEND_URL.split("//")[1]
+if ':' in ALLOWED_HOST:
+    ALLOWED_HOST = ALLOWED_HOST.split(":")[0]
+ALLOWED_HOSTS = [ALLOWED_HOST,]
 
 
 # Application definition
