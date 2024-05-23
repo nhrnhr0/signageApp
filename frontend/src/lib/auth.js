@@ -57,7 +57,7 @@ class AuthService {
         if (browser)
         {
             let token = JSON.parse(localStorage.getItem('token'));
-            return token.access;
+            return token?.token || undefined;
         }
     }
 

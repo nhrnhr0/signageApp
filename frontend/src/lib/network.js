@@ -20,8 +20,10 @@ export async function my_fetch(url, options = undefined) {
         {
             options.headers = {};
         }
-        options.headers["Authorization"] = `Bearer ${token}`;
+        options.headers["Authorization"] = `token ${token}`;
     }
+    debugger;
+
     let ret = await fetch(url, options);
     return ret;
 }
