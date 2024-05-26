@@ -7,9 +7,10 @@
 	import ScreenSerivce from '$lib/services/screens';
 	import ScreenIslandsManager from '$lib/components/screen/ScreenIslandsManager.svelte';
 	AuthService.protected_route();
-	const uuid = $page.params.uuid;
+	let uuid = undefined; // $page.params.uuid;
 	let screen = null;
 	onMount(async () => {
+		uuid = $page.url.searchParams.get('id');
 		screen = await ScreenSerivce.getScreen(uuid);
 	});
 
@@ -68,7 +69,12 @@
 
 	<div class="container iframe-container mt-5">
 		<h2>דמו</h2>
-		<iframe src="/display/{screen.code}" width="100%" height="100%" frameborder="0" class="iframe"
+		<iframe
+			src="/display/?id={screen.code}"
+			width="100%"
+			height="100%"
+			frameborder="0"
+			class="iframe"
 		></iframe>
 	</div>
 {/if}

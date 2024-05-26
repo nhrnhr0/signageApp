@@ -123,7 +123,7 @@
 						url_key: 'uuid',
 						orderable: true,
 						display: (playlist, header) => {
-							return `<a href="/dashboard/playlists/${playlist.uuid}">${playlist.uuid.substring(0, 8)}</a>`;
+							return `<a href="/dashboard/playlists/detail?id=${playlist.uuid}">${playlist.uuid.substring(0, 8)}</a>`;
 						}
 					},
 					{

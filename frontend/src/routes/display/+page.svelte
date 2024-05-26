@@ -8,12 +8,14 @@
 	import BarcodeScannerListener from '$lib/components/display/BarcodeScannerListener.svelte';
 	import authService from '$lib/auth';
 
-	const code = $page.params.code;
-	authService.protected_route();
+	let code = undefined; // $page.params.code;
+
 	let data = null;
 	let interval = null;
-	onMount(async () => {
-		debugger;
+	onMount(() => {
+		authService.protected_route();
+
+		code = $page.url.searchParams.get('id');
 		ScreenService.getScrenDisplayByCode(code).then((_data) => {
 			data = _data;
 		});

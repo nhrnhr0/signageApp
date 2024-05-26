@@ -17,9 +17,11 @@ class SSOAuthentication(BaseAuthentication):
         if response.status_code == 200:
             user_info = response.json() #{'username':'nhrnhr0''organization':'org12''type':'editor'}
             # make sure that user_info.domain is the same as our domain
-            user_domain =user_info.get('domain', 'http://no-domain').split('//')[1]
-            if user_domain != request.META.get('HTTP_HOST'):
-                raise AuthenticationFailed('user organization does not match the request domain: %s != %s' % (user_domain, request.META.get('HTTP_HOST')))
+            # user_domain =user_info.get('domain', 'http://no-domain').split('//')[1]
+            backend_domain = user_info.get('backend_domain', 'http://no-domain').split('//')[1]
+            frontend_domain = user_info.get('frontend_doamin', 'http://no-domain').split('//')[1]
+            if not (backend_domain == request.META.get('HTTP_HOST') or frontend_domain == request.META.get('HTTP_HOST')):
+                raise AuthenticationFailed('user organization does not match the request domain: %s / %s != %s' % (backend_domain,frontend_domain, request.META.get('HTTP_HOST')))
             try:
                 user = User.objects.get(username=user_info['username'])
             except User.DoesNotExist:
@@ -29,7 +31,6 @@ class SSOAuthentication(BaseAuthentication):
                     last_name=user_info.get('last_name', ''),
                     email=user_info.get('email', '')
                 )
-            user.domain = user_info['domain']
             user.user_type = user_info['type']
             return user, None
         raise AuthenticationFailed('Invalid token')

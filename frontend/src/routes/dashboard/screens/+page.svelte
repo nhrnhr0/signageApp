@@ -20,7 +20,7 @@
 	{#each screens as screen}
 		<li>
 			<div>
-				<a href="{$page.url}/{screen.uuid}">{screen.name}</a>
+				<a href="/dashboard/screens/detail/?id={screen.uuid}">{screen.name}</a>
 			</div>
 		</li>
 	{/each}

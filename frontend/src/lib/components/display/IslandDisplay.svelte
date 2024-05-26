@@ -130,6 +130,9 @@
 {/if}
 
 <style>
+	p {
+		color: #ffffff;
+	}
 	.preloader {
 		position: absolute;
 		top: -1000px;

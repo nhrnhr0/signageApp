@@ -41,7 +41,7 @@ each part will have a svelte component that will show the playlist (data.islands
 	}
 
 	.big-part {
-		background-color: #ffffff;
+		background-color: #000;
 	}
 
 	.small-wrapper {
@@ -52,7 +52,7 @@ each part will have a svelte component that will show the playlist (data.islands
 	}
 
 	.small-part {
-		background-color: #ffffff;
+		background-color: #000;
 	}
 
 	.part {

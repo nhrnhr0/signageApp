@@ -57,11 +57,12 @@ class AuthService {
         if (browser)
         {
             let token = JSON.parse(localStorage.getItem('token'));
-            return token?.token || undefined;
+            return token?.auth_token || undefined;
         }
     }
 
     try_login_from_page_auth() {
+        debugger;
         if (browser)
         {
             const token_b64Safe = new URLSearchParams(window.location.search).get('auth_token');
@@ -92,6 +93,7 @@ class AuthService {
      * @param {string|undefined} url 
      */
     protected_route(url = undefined) {
+        debugger;
         if (browser && !get(this.is_logged_in))
         {
             if (this.try_login_from_page_auth())

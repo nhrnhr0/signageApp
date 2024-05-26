@@ -27,7 +27,7 @@ each part will have a svelte component that will show the playlist (data.islands
 	}
 
 	.full-part {
-		background-color: #ffffff;
+		background-color: #000;
 	}
 
 	.part {

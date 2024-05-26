@@ -12,7 +12,9 @@
 	let uuid = undefined;
 	let playlist = null;
 	onMount(async () => {
-		uuid = $page.params.uuid;
+		uuid = $page.url.searchParams.get('id');
+		debugger;
+		console.log('uuid: ', uuid);
 		playlist = await PlaylistsService.getPlaylist(uuid);
 	});
 </script>
