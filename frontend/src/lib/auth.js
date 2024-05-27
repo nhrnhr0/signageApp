@@ -57,7 +57,7 @@ class AuthService {
         if (browser)
         {
             let token = JSON.parse(localStorage.getItem('token'));
-            return token?.auth_token || undefined;
+            return token?.token || undefined;
         }
     }
 
@@ -80,8 +80,9 @@ class AuthService {
 
                 // remove token from url
                 let url = window.location.href;
-                url = url.replace(`?auth_token=${token_b64Safe}`, '');
-                window.history.replaceState({}, document.title, url);
+                let new_url = new URL(url);
+                new_url.searchParams.delete('auth_token');
+                window.history.replaceState({}, document.title, new_url);
                 return true;
             }
             return false;
@@ -93,7 +94,6 @@ class AuthService {
      * @param {string|undefined} url 
      */
     protected_route(url = undefined) {
-        debugger;
         if (browser && !get(this.is_logged_in))
         {
             if (this.try_login_from_page_auth())
