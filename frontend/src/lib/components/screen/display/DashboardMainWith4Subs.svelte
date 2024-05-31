@@ -20,7 +20,7 @@
 
 	async function loadOptions() {
 		let resp = await PlaylistSerice.getPlaylists();
-		let options = resp.map((playlist) => {
+		let options = resp.results.map((playlist) => {
 			return {
 				uuid: playlist.uuid,
 				name: playlist.name,

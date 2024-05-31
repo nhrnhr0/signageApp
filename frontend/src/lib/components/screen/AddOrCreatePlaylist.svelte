@@ -9,7 +9,7 @@
 	let options = [];
 	async function loadOptions(filterText) {
 		let resp = await PlaylistSerice.searchPlaylists(filterText);
-		options = resp.map((playlist) => {
+		options = resp.results.map((playlist) => {
 			return {
 				uuid: playlist.uuid,
 				name: playlist.name
